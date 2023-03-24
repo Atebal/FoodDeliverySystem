@@ -1,0 +1,17 @@
+{
+	"name": "CustomerAddress",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "SalesLT",
+			"table": "CustomerAddress"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

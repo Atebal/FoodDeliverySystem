@@ -1,0 +1,23 @@
+{
+	"name": "AddressCSV",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Ingestion_Customer_SQLDB_ADLS_FolderLinked",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "Address",
+				"container": "landing"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
