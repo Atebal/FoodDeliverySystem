@@ -1,0 +1,45 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "mission100atebal21071992"
+		},
+		"AzureBlogJsonlink_connectionString": {
+			"value": ""
+		},
+		"AzureDataLakeStorage1_accountKey": {
+			"value": ""
+		},
+		"AzureSqlDatabase1_connectionString": {
+			"value": ""
+		},
+		"AzureSqlDatabaseLink_connectionString": {
+			"value": ""
+		},
+		"Ingestion_Customer_SQLDB_ADLS_FolderLinked_connectionString": {
+			"value": ""
+		},
+		"ThresholdLink_accountKey": {
+			"value": ""
+		},
+		"csvAddresssCuatomerLink_connectionString": {
+			"value": ""
+		},
+		"csvLinked_connectionString": {
+			"value": ""
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"value": "https://mission100atebaladls.dfs.core.windows.net/"
+		},
+		"ThresholdLink_properties_typeProperties_url": {
+			"value": "https://mission100atebaladls.dfs.core.windows.net/"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}

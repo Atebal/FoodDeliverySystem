@@ -1,0 +1,152 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "mission100atebal21071992"
+		},
+		"AzureBlogJsonlink_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlogJsonlink'"
+		},
+		"AzureDataLakeStorage1_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage1'"
+		},
+		"AzureSqlDatabase1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase1'"
+		},
+		"AzureSqlDatabaseLink_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabaseLink'"
+		},
+		"Ingestion_Customer_SQLDB_ADLS_FolderLinked_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'Ingestion_Customer_SQLDB_ADLS_FolderLinked'"
+		},
+		"ThresholdLink_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'ThresholdLink'"
+		},
+		"csvAddresssCuatomerLink_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'csvAddresssCuatomerLink'"
+		},
+		"csvLinked_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'csvLinked'"
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://mission100atebaladls.dfs.core.windows.net/"
+		},
+		"ThresholdLink_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://mission100atebaladls.dfs.core.windows.net/"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "mission100atebal21071992_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"AzureBlogJsonlink_connectionString": {
+						"value": "[parameters('AzureBlogJsonlink_connectionString')]"
+					},
+					"AzureDataLakeStorage1_accountKey": {
+						"value": "[parameters('AzureDataLakeStorage1_accountKey')]"
+					},
+					"AzureSqlDatabase1_connectionString": {
+						"value": "[parameters('AzureSqlDatabase1_connectionString')]"
+					},
+					"AzureSqlDatabaseLink_connectionString": {
+						"value": "[parameters('AzureSqlDatabaseLink_connectionString')]"
+					},
+					"Ingestion_Customer_SQLDB_ADLS_FolderLinked_connectionString": {
+						"value": "[parameters('Ingestion_Customer_SQLDB_ADLS_FolderLinked_connectionString')]"
+					},
+					"ThresholdLink_accountKey": {
+						"value": "[parameters('ThresholdLink_accountKey')]"
+					},
+					"csvAddresssCuatomerLink_connectionString": {
+						"value": "[parameters('csvAddresssCuatomerLink_connectionString')]"
+					},
+					"csvLinked_connectionString": {
+						"value": "[parameters('csvLinked_connectionString')]"
+					},
+					"AzureDataLakeStorage1_properties_typeProperties_url": {
+						"value": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]"
+					},
+					"ThresholdLink_properties_typeProperties_url": {
+						"value": "[parameters('ThresholdLink_properties_typeProperties_url')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "mission100atebal21071992_ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'mission100atebal21071992_ArmTemplate_0')]"
+			]
+		},
+		{
+			"name": "mission100atebal21071992_ArmTemplate_2",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_2.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'mission100atebal21071992_ArmTemplate_1')]"
+			]
+		}
+	]
+}
