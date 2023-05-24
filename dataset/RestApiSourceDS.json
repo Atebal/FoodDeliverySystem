@@ -1,0 +1,13 @@
+{
+	"name": "RestApiSourceDS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "RestServiceForAllCountries",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
