@@ -1,2 +1,2 @@
 # MyProjects
-repo for my work 
+This project is realted food item app
