@@ -23,12 +23,16 @@ class Item(models.Model):
     receipe=models.CharField(max_length=200,default='',null=True,blank=True)
     price=models.FloatField(default=0)
     image=models.ImageField(upload_to="Images")
+    totalquantities=models.IntegerField(default=0,null=True,blank=True)
+
+
 
 class EmployeeOrderHistory(models.Model):
     username=models.ForeignKey(User,on_delete=models.SET_NULL,null=True,blank=True)
     itemname=models.ForeignKey(Item,on_delete=models.SET_NULL,null=True,blank=True)
     Quantity=models.IntegerField(default=0)
     price=models.FloatField(default=0)
+    transactiondate=models.DateTimeField(auto_now_add=True, null=True,blank=True)
 
 class Payment(models.Model):
     username=models.OneToOneField(User,on_delete=models.SET_NULL,null=True,blank=True)

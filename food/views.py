@@ -26,13 +26,61 @@ def getitemdetails(request):
 def itemcart(request):
     userid=request.user.id
       
-    order_items = orders.objects.filter(username=userid).select_related('receipeid').values(
+    order_items = orders.objects.filter(username=userid,incart=True).select_related('receipeid').values(
                                 'receipeid__itemName','receipeid__price','receipeid__receipe','receipeid__image',
-                                'itemquantity','receipeid','orderid')
+                                'itemquantity','receipeid','orderid','receipeid__id')
     
-    context={'items':order_items}
+    ordtotal=0
+    total=0
+    for ord in order_items:
+        ordtotal += (ord['itemquantity'] * ord['receipeid__price'])
+    
+    total=(ordtotal*0.2) + ordtotal    
+    context={'items':order_items,'subtotal':ordtotal,'total':total}
     
     return render(request,"itemcart.html",context)
+
+def checkout(request):
+    if request.method=='POST':
+     username=request.POST.get('username')
+     data=request.POST
+     total=data.get('total')
+     receipe=json.loads(data.get('receipe'))
+     ordersdata=json.loads(data.get('orders'))
+    
+     for ord in ordersdata:
+         orderid=ord.get('orderid')
+         qty=ord.get('itemquantity')
+         orders.objects.filter(orderid=orderid).update(itemquantity=qty,incart=False,paymentstatus='completed')
+
+    
+
+     trans=Transactions.objects.create(
+        username=User.objects.get(username=username),
+        amount=total,
+        transactype='debit'
+        )
+     trans.save()
+   
+    
+
+    for rec in receipe:
+               
+        emph= EmployeeOrderHistory.objects.create(
+            username=User.objects.get(username=username),
+            itemname=Item.objects.get(id=rec.get('receipeid')),
+            Quantity=rec.get('quantity'),
+            price=rec.get('price')
+        )
+        emph.save()
+    totalquantities=0
+    for it in receipe:
+        totalquantities=int(it.get('quantity'))-totalquantities
+       # Item.objects.filter(id=it.rec.get('receipeid')).update(totalquantities=totalquantities)
+        totalquantities=0
+
+    return redirect('/')
+
 
 #add user selected food receipe
 def addordersdetail(request):
@@ -70,11 +118,13 @@ def addfooditem(request):
         receipe=request.POST.get('receipe')
         price=request.POST.get('price')
         image= request.FILES.get('re_image')
+        totalquantities=request.POST.get('totalquantities')
         item=Item.objects.create(
             itemName=itemName,
             receipe=receipe,
             price=price,
-            image=image
+            image=image,
+            totalquantities=totalquantities
         )
 
         item.save()

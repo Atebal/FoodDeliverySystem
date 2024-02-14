@@ -44,6 +44,7 @@
                                             <th>Last Name</th>
                                             <th>Email</th>
                                             <th>Balance</th>
+                                            <th>PurchaseItems</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
@@ -55,6 +56,7 @@
                                             <td>{{usr.employee__last_name}}</td>
                                             <td>{{usr.employee__email}}</td>
                                             <td>{{usr.payment__balance}}</td>
+                                            <td onclick=purchaseitem()><a href="#">Items</a></td>
                                             <td><button onclick=edituser() class="btn btn-success"><i
                                                         class="bi bi-pencil"></i></button>
                                                 <button onclick=deleteuser() class="btn btn-danger"><i
@@ -86,6 +88,26 @@
 
 
     <script type="text/javascript">
+
+        function purchaseitem()
+        {
+                       
+            var table = $('#bootstrap-data-table').DataTable();
+            $('#bootstrap-data-table tbody').on('click', 'tr', function (e) {
+                    debugger;
+                    e.preventDefault();
+            username = table.row(this).data()[0];
+            flag=true
+            localStorage.clear()
+            localStorage.setItem('customername',username)
+            localStorage.setItem('flag',flag)
+            window.location.href = '/menuitem/';
+        });
+            
+}
+
+        
+
         function deleteuser() {
                 var table = $('#bootstrap-data-table').DataTable();
                 var csrfToken = '{{ csrf_token }}'; // Obtain CSRF token from Django template

@@ -164,6 +164,9 @@ def payment(request):
 def deleteuser(request):
     if request.method=='POST':
         username=request.POST.get('username')
+        user=User.objects.filter(username=username).values('id')
+        userid=user[0]['id']
+        Employee.objects.filter(username=userid).delete()
         User.objects.filter(username=username).delete()
         queryset=User.objects.all().values(
             'username', 'employee__firstname','employee__last_name','employee__email','employee__mobile','addresstable__state','payment__balance'

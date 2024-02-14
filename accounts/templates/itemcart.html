@@ -2334,16 +2334,21 @@
         </div>
     </div>
 </header>
- 
+{% load custom_filters %}
   <div class="cart">
     <div class="container">
+    <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+        
       <div class="grid_12">
         <h1>Your Cart</h1>
       </div>
       <ul class="items">
         {% for item in items %}
+       
+        
         <li class="grid_4 item">
-          <a onclick=delteorderitems(id) href="#" class="btn-remove" id="{{item.orderid}}">
+          <a onclick=delteorderitems(id) href="#" class="btn-remove">
             <i class="fa fa-trash"></i>
           </a>
           <div class="preview">
@@ -2364,17 +2369,17 @@
                     <i class="fa fa-plus" aria-hidden="true"></i>
                 </a>
               <div class="col_1of2 quantity-text">
-                <p value="{{item.receipeid__price}}"><span class="current_quantity">{{item.itemquantity}}</span> @ ₹ {{item.receipeid__price}}</p>
+                <p value="{{item.receipeid__price}}"><span id="{{item.orderid}}"class="current_quantity">{{item.itemquantity}}</span> @ ₹ {{item.receipeid__price}}</p>
               </div>
               <a href="#" class="btn-quantity minus">
                 <i class="fa fa-minus" aria-hidden="true"></i>
               </a>
               </p>
-              <input type="hidden" class="quantity_field" name="quantity" data-price="15.50" value="{{item.itemquantity}}" />
+              <input type="hidden" class="quantity_field" name="quantity" data-price="{{item.receipeid__price}}" value="{{item.itemquantity}}" id="{{item.receipeid__id}}" />
             </div>
             <div class="col_1of2 quantity-text">
-                {% load custom_filters %}
-                <p class="mult"> ₹ {% multiply item.itemquantity item.receipeid__price %}</p>
+                
+                <p class="mult" id="tot_{{item.orderid}}"> ₹ {% multiply item.itemquantity item.receipeid__price %}</p>
               </div>
           </div>
   
@@ -2402,7 +2407,8 @@
           <div class="summary-content">
           <div class="col_1of2 meta-data">
             <div class="sub-total">
-              <em>Sub Total: </em><span class="amount"></span>
+
+              <em>Sub Total: </em><span class="amount">₹ {{subtotal}}</span>
             </div>
             <div class="taxes">
               <em>Plus VAT: </em><span class="amount">@ 20%</span>
@@ -2411,7 +2417,7 @@
           </div>
           <div class="col_1of2">
             <div class="total">
-              <span class="amount"></span>
+              <span class="amount">₹ {{total}}</span>
             </div>
           </div>
           </div>
@@ -2419,47 +2425,58 @@
   
             <a href="#" class="btn-checkout btn-reverse">Continue Shopping</a>
   
-            <a href="#" class="btn-checkout">Checkout</a>
+            <a onclick=checkout() class="btn-checkout">Checkout</a>
   
           </div>
         </div>
       </div>
+    </form>
     </div>
+
   </div>
   <script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
   <script>
+
+
 var $addQuantity = $(".btn-quantity.plus"),
   $minusQuantity = $(".btn-quantity.minus")
   //$removeItem = $(".btn-remove");
 
 $addQuantity.on("click", function (e) {
-  
-  e.preventDefault();
+    e.preventDefault();
   debugger;
   var $item = $(this).parents(".item"),
-    $quantityField = $item.find(".quantity_field"),
-    currentQuantity = $quantityField.val(),
+    $quantityField = $item.find(".current_quantity"),
+    currentQuantity = $quantityField[0].innerText,
     price=$item.find('.current_quantity')[0].parentElement.getAttribute('value')
     
     nextQuantity = parseFloat(currentQuantity) + 1;
    
   $item.find(".current_quantity").html(nextQuantity);
+
+  $item.find(".quantity_field").val(nextQuantity)
   $quantityField.val(nextQuantity);
-  $item.find(".mult")[0].innerText=Number(price)*nextQuantity,
+
+  $item.find(".mult")[0].innerText="₹ "+ Number(price)*nextQuantity,
 
   calculateTotal();
 });
 
 $minusQuantity.on("click", function (e) {
+    debugger;
   e.preventDefault();
   var $item = $(this).parents(".item"),
-    $quantityField = $item.find(".quantity_field"),
-    currentQuantity = $quantityField.val();
+    $quantityField = $item.find(".current_quantity"),
+    currentQuantity = $quantityField[0].innerText;
   var prevQuantity = currentQuantity <= 1 ? 0 : parseFloat(currentQuantity) - 1;
+
   price=$item.find('.current_quantity')[0].parentElement.getAttribute('value')
+
   $item.find(".current_quantity").html(prevQuantity);
+  $item.find(".quantity_field").val(nextQuantity)
+
   $quantityField.val(prevQuantity);
-  $item.find(".mult")[0].innerText=Number(price)*prevQuantity,
+  $item.find(".mult")[0].innerText="₹ " + Number(price)*prevQuantity,
   calculateTotal();
 });
 
@@ -2470,29 +2487,31 @@ $minusQuantity.on("click", function (e) {
   calculateTotal();
 }); */
 
+//var newSubTotal = 0;
 var calculateTotal = function () {
+    debugger
   var newSubTotal = 0;
-  $(".quantity_field").each(function () {
-    var quantity = $(this).val(),
-      price = $(this).data("price");
+  $(".mult").each(function () {
+    debugger;
+    var tot = $(this)[0].innerText;
+     // price = $(this).data("price");
 
-    newSubTotal += parseFloat(quantity * price);
+    newSubTotal += parseFloat(tot.substr(2,tot.length-1));
   });
 
-  $(".sub-total .amount").html("£" + newSubTotal.toFixed(2));
+  $(".sub-total .amount").html("₹" + newSubTotal.toFixed(2));
 
   var withTax = newSubTotal * 1.2;
 
   var newTotal = withTax + 0;
 
-  $(".total .amount").html("Total" + " " + "£" + newTotal.toFixed(2));
+  $(".total .amount").html("Total" + " " + "₹" + newTotal.toFixed(2));
 };
 
-calculateTotal();
+//calculateTotal();
+
 
 function delteorderitems(id){
-
-debugger;
 $.ajax({
             url: '/deleteorder/',  // URL to the Django view
             type: 'GET',
@@ -2509,7 +2528,87 @@ $.ajax({
                 console.log(error);
             }
         });
-
 }
+
+
+function checkout()
+{
+   debugger;
+   var username;
+    if('{{request.user}}'=='admin' && localStorage.getItem('flag')=='true')
+    {
+        username=localStorage.getItem('customername')
+        //var purchasethroughadmin=localStorage.getItem('flag')
+    }
+    else{
+        username='{{request.user}}'
+    }
+   
+  var orders=[]
+  tot= $(".total .amount")[0].innerText
+ total= parseFloat(tot.substr(2,tot.length-1))
+  $(".current_quantity").each(function () {
+    
+    var itemquantity = $(this)[0].innerText;
+    var orderid=$(this)[0].id;
+    
+    ord={
+        'itemquantity':itemquantity,
+        'orderid':orderid,
+         
+    }
+    orders.push(ord)
+
+     // price = $(this).data("price");
+    
+  });
+  orders=JSON.stringify(orders)
+
+ var receipe=[]
+ $(".quantity_field").each(function () {
+    debugger;
+    var receipeid=$(this)[0].id;
+    quantity=$(this).val()
+    var price=$(this).data('price');
+    rec={
+            'receipeid':receipeid,
+            'quantity':quantity,
+            'price':price
+
+    }
+    receipe.push(rec)
+     // price = $(this).data("price");
+    
+  });
+  
+  receipe=JSON.stringify(receipe)
+
+//'receipe':receipe,
+  var csrfToken = '{{ csrf_token }}';
+
+  $.ajax({
+            url: '/checkout/',  // URL to the Django view
+            type: 'POST',
+            data:{
+                'orders':orders,
+                'total':total,
+                'receipe':receipe,
+                'username':username,
+                'csrfmiddlewaretoken': csrfToken
+                },
+            
+            success: function (response) {
+                //window.location.reload();
+                window.location.href = '/';
+                  // Insert rendered HTML into div
+
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+}
+
+
 
   </script>
