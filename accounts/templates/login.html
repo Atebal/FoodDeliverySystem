@@ -1,0 +1,35 @@
+
+
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css" />
+
+{% block start %}
+<body>
+    
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+  <div class="login_Container" >
+        <div class="login_cut"><button type="submit"><a href="/">X</a></button></div>
+        <div>
+            <div class="login_create">
+                <h1>Login</h1>
+                <p>or <span><a href="/register" >create an account</a></span></p>
+                <div>___</div>
+            </div>
+        </div>
+        <div class="login_input">
+            <input type="text" placeholder='username' name="username"/>
+            <input type="password" placeholder='password'  name="password"/>
+        </div>
+        <div class="login_btn">
+            <button type="submit">LOGIN</button>
+            <p>By clicking on Login, I accept the Terms & Conditions & Privacy Policy</p>
+        </div>
+    </div>
+   
+    
+</form>
+    </body>
+ {% endblock %}
+    

@@ -1,0 +1,155 @@
+ <!-- Modal -->
+ <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+ <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">{{item.itemName}}</h5>
+            <button  onclick=closemodal() type="button" id= "closebtn" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body" style="height:450px;left:20%">
+            <div class="place restaurant-list">
+                <a  class="place-link">
+                    <div>
+                      
+                        <div class="item-content">
+                            <div class="top-img">
+                                <img class="_2tuBw _12_oN" alt="La Pino'z Pizza"
+                                    src="https://res.cloudinary.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_508,h_320,c_fill/hgvtyqrxzvpwmbs361er"
+                                    width="254" height="160">
+                            </div>
+                            <div class="status" style="
+                            background: rgb(58, 60, 65);
+                            color: rgb(255, 255, 255);
+                            border-color: rgb(30, 32, 35) transparent;">
+                                <div class="status-title">Promoted</div>
+                            </div>
+                            <div class="place-name-div">
+                                <div class="name" id="{{item.id}}_itemName">{{item.itemName}}</div>
+                                <div class="food-items"
+                                    title="Italian, Pizzas, Fast Food, Mexican, Desserts, Beverages">
+                                   {{item.receipe}}</div>
+                            </div>
+                            <div class="info-div">
+                                <div class="rating">
+                                    <span class="icon-star"><i class="fa-solid fa-star"></i></span>
+                                    <span>3.8</span>
+                                </div>
+                                <div>•</div>
+                                <div>42 MINS</div>
+                                <div>•</div>
+                                <div class="price">₹{{item.price}}</div>
+                            </div>
+                            <div class="offer-div">
+                                <span class="icon-offer-filled"><i class="fa-solid fa-tag"></i></span>
+                                <span class="offer-text">50% off | Use WELCOME50</span>
+                            </div>
+                           
+                        </div>
+
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="modal-footer">
+                   
+             <div class="inner_container item">
+              
+                <div class="col_1of2 align-center picker">
+                  <p>
+                    <a   class="btn-quantity plus">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                    </a>
+                  <div class="col_1of2 quantity-text">
+                    <p><span class="current_quantity" id="pqty_{{item.id}}">1</span> @ ₹{{item.price}}</p>
+                  </div>
+                  <a href="#" class="btn-quantity minus">
+                    <i class="fa fa-minus" aria-hidden="true"></i>
+                  </a>
+                  
+                  </p>
+                  <input type="hidden" class="quantity_field" name="quantity" data-price="15.50" value="1" />
+                </div>
+                
+              </div>
+              <button onclick=addorderitems(id)  class="btn btn-secondary cart" id="{{item.id}}" type="button"><i class="bi bi-cart3"></i> Add to cart</button>
+        </div>
+        </form>
+      </div>
+    </div>
+</div>
+</form>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+
+
+var $addQuantity = $(".btn-quantity.plus"),
+  $minusQuantity = $(".btn-quantity.minus"),
+  $removeItem = $(".btn-remove");
+
+
+$addQuantity.on("click", function (e) {
+ e.preventDefault();
+var $item = $(".btn-quantity.plus").parents(".item"),
+  $quantityField = $item.find(".quantity_field"),
+  currentQuantity = $quantityField.val(),
+  nextQuantity = parseFloat(currentQuantity) + 1;
+  document.getElementById("cart-count").textContent = nextQuantity;
+$item.find(".current_quantity").html(nextQuantity);
+$quantityField.val(nextQuantity);
+
+calculateTotal();
+});
+
+$minusQuantity.on("click", function (e) {
+  e.preventDefault();
+  var $item = $(this).parents(".item"),
+    $quantityField = $item.find(".quantity_field"),
+    currentQuantity = $quantityField.val();
+  var prevQuantity = currentQuantity <= 1 ? 0 : parseFloat(currentQuantity) - 1;
+  document.getElementById("cart-count").textContent = prevQuantity;
+  $item.find(".current_quantity").html(prevQuantity);
+  $quantityField.val(prevQuantity);
+
+  calculateTotal();
+});
+
+$removeItem.on("click", function () {
+  var $item = $(this).parents(".item");
+  $item.remove();
+
+  calculateTotal();
+});
+
+var calculateTotal = function () {
+  var newSubTotal = 0;
+  $(".quantity_field").each(function () {
+    var quantity = $(this).val(),
+      price = $(this).data("price");
+
+    newSubTotal += parseFloat(quantity * price);
+  });
+
+  $(".sub-total .amount").html("£" + newSubTotal.toFixed(2));
+
+  var withTax = newSubTotal * 1.2;
+
+  var newTotal = withTax + 0;
+
+  $(".total .amount").html("Total" + " " + "£" + newTotal.toFixed(2));
+};
+
+calculateTotal();
+
+
+</script>

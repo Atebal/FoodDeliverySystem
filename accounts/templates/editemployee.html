@@ -1,0 +1,24 @@
+
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css" />
+<body>
+  <h1>Update User Details</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+    <div class="login_Container">
+          <div class="login_cut"><button type="submit"><a href="/">X</a></button></div>
+          <div class="login_input">
+              <input type="text" placeholder='Name' value={{user.username}} name='username' readonly />
+              <input type="email" placeholder='Email' name='email'  value={{user.email}} />
+              <input type="email" placeholder='text' name='mobile'  value={{user.mobile}} />
+              <input type="email" placeholder='text' name='firstname'  value={{user.firstname}} />
+              <input type="email" placeholder='text' name='lastname'  value={{user.last_name}} />
+              </div>
+          <div class="login_btn">
+              <button type="submit">Update</button>
+              <p></p>
+          </div>
+      </div>
+    </form>
+    </body>

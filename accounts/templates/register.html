@@ -1,0 +1,38 @@
+
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css" />
+<body>
+    {% if messages %}
+    <div class="alert alert-primary" role="alert">
+        {% for message in messages %}
+        {{message}}
+        {% endfor %}
+      </div>
+    {% endif %}
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+    <div class="login_Container">
+          <div class="login_cut"><button type="submit"><a href="/">X</a></button></div>
+          <div>
+              <div class="login_create">
+                  <h1>Signup</h1>
+                  <p>or <span><a href="/login">login to your account</a></span></p>
+                  <div>___</div>
+              </div>
+          </div>
+          <div class="login_input">
+              <input type="text" placeholder='Name' name='username'  />
+              <input type="text" placeholder='First Name' name='firstname'  />
+              <input type="text" placeholder='Last Name' name='last_name'  />
+              <input type="email" placeholder='Email' name='email'  />
+              <input type="text" placeholder='Mobile' name='mobile'  />
+              <input type="password" placeholder='Password' name='password' />
+          </div>
+          <div class="login_btn">
+              <button type="submit">SIGNUP</button>
+              <p>By creating an account, I accept the Terms & Conditions & Privacy Policy</p>
+          </div>
+      </div>
+    </form>
+    </body>
