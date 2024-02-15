@@ -90,19 +90,53 @@ def createGroups():
     admins_group.save()  
     employee_group=Group(name="CMSEmployee")
     employee_group.save()  
+   
+
+def assignpermission():
+    tblobj=[Employee,Item,EmployeeOrderHistory,Payment,AddressTable,Transactions,orders,User]
+    notEmployeepermissions=['delete_employee','delete_item','delete_employeeorderhistory','delete_payment','delete_transactions','delete_user','delete_addresstable',
+                            'change_item','change_employeeorderhistory','change_payment','change_transactions','change_user']
     
-    content_type=ContentType.objects.get_for_model(Employee)
-    employee_permission=Permission.objects.filter(content_type=content_type)
+    admins_group= Group.objects.get(name='CMSAdmin')
+    employee_group=Group.objects.get(name='CMSEmployee')
+    isEmployee=True
+    if(isEmployee==True):
+        for obj in tblobj:
+            content_type=ContentType.objects.get_for_model(obj)
+            obj_permission=Permission.objects.filter(content_type=content_type)
+            for perm in obj_permission:
+                if perm not in notEmployeepermissions:
+                    employee_group.permissions.add(perm)
+                    employee_group.save()
+    else:
+        for obj in tblobj:
+            content_type=ContentType.objects.get_for_model(obj)
+            obj_permission=Permission.objects.filter(content_type=content_type)
+            for perm in obj_permission:
+                    admins_group.permissions.add(perm)
+                    admins_group.save() 
+                      
+                    
     
-    for perm in employee_permission:
-        admins_group.permissions.add(perm)
-        if perm.codename=="view_employee":
-            employee_group.permissions.add(perm)
-    admins_group.save() 
-    employee_group.save()  
+
+def assignGroups(username,isEmployee):
+    user = User.objects.get(username=username)
+    CMSAdmin = Group.objects.get(name="CMSAdmin")
+    CMSEmployee=Group.objects.get(name="CMSEmployee")
+    if(isEmployee==True):
+        CMSEmployee.user_set.add(user)
+        CMSEmployee.save()
+    else:
+        CMSAdmin.user_set.add(user)
+        CMSAdmin.save()
+
+#check if user in group
+#user = User.objects.get(username="admin")
+#group = Group.objects.get(name="CMSAdmin")
+#is_member = group in user.groups.all()
+        
+
     
-def assignGroups():
-    pass
 
 def deleteGroups():
     groupname=["CMSAdmin","CMSEmployee"]
