@@ -1,5 +1,5 @@
  <!-- Modal -->
- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
 
  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -94,62 +94,46 @@
 
 
 var $addQuantity = $(".btn-quantity.plus"),
-  $minusQuantity = $(".btn-quantity.minus"),
-  $removeItem = $(".btn-remove");
-
+  $minusQuantity = $(".btn-quantity.minus")
+  //$removeItem = $(".btn-remove");
 
 $addQuantity.on("click", function (e) {
- e.preventDefault();
-var $item = $(".btn-quantity.plus").parents(".item"),
-  $quantityField = $item.find(".quantity_field"),
-  currentQuantity = $quantityField.val(),
-  nextQuantity = parseFloat(currentQuantity) + 1;
-  document.getElementById("cart-count").textContent = nextQuantity;
-$item.find(".current_quantity").html(nextQuantity);
-$quantityField.val(nextQuantity);
+    e.preventDefault();
+  debugger;
+  var $item = $(this).parents(".item"),
+    $quantityField = $item.find(".current_quantity"),
+    currentQuantity = $quantityField[0].innerText,
+    price=$item.find('.current_quantity')[0].parentElement.getAttribute('value')
+    
+    nextQuantity = parseFloat(currentQuantity) + 1;
+   
+  $item.find(".current_quantity").html(nextQuantity);
 
-calculateTotal();
+  $item.find(".quantity_field").val(nextQuantity)
+  $quantityField.val(nextQuantity);
+
+  $item.find(".mult")[0].innerText="₹ "+ Number(price)*nextQuantity
+
+  //calculateTotal();
 });
 
 $minusQuantity.on("click", function (e) {
+    debugger;
   e.preventDefault();
   var $item = $(this).parents(".item"),
-    $quantityField = $item.find(".quantity_field"),
-    currentQuantity = $quantityField.val();
+    $quantityField = $item.find(".current_quantity"),
+    currentQuantity = $quantityField[0].innerText;
   var prevQuantity = currentQuantity <= 1 ? 0 : parseFloat(currentQuantity) - 1;
-  document.getElementById("cart-count").textContent = prevQuantity;
+
+  price=$item.find('.current_quantity')[0].parentElement.getAttribute('value')
+
   $item.find(".current_quantity").html(prevQuantity);
+  $item.find(".quantity_field").val(nextQuantity)
+
   $quantityField.val(prevQuantity);
-
-  calculateTotal();
+  $item.find(".mult")[0].innerText="₹ " + Number(price)*prevQuantity
+  //calculateTotal();
 });
-
-$removeItem.on("click", function () {
-  var $item = $(this).parents(".item");
-  $item.remove();
-
-  calculateTotal();
-});
-
-var calculateTotal = function () {
-  var newSubTotal = 0;
-  $(".quantity_field").each(function () {
-    var quantity = $(this).val(),
-      price = $(this).data("price");
-
-    newSubTotal += parseFloat(quantity * price);
-  });
-
-  $(".sub-total .amount").html("£" + newSubTotal.toFixed(2));
-
-  var withTax = newSubTotal * 1.2;
-
-  var newTotal = withTax + 0;
-
-  $(".total .amount").html("Total" + " " + "£" + newTotal.toFixed(2));
-};
-
-calculateTotal();
 
 
 </script>

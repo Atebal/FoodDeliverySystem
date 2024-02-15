@@ -129,8 +129,8 @@
     min-width: 1200px;
     position: relative;
     margin: 0 auto;
-    padding-top: 42px;
-    top: 80px;
+    /*padding-top: 42px;
+    top: 80px; */
     background: #fff;
     left: 31px;
   }
@@ -504,3 +504,11 @@
   display: block; /* Show the .forLogoutBox when hovering over #usr */
 }
  
+
+.todaymenu
+{
+  position: relative;
+  top: 80px;
+  text-align: center;
+  font-size: 80px;
+}

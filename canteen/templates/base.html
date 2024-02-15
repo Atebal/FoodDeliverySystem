@@ -7,27 +7,27 @@
     <link rel="icon" sizes="192x192"
         href="{%static 'Images/classytitle.jpeg' %}">
 
-       
-
-      <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css" />
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css" />
    
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
-        integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" /> !-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;700;900&display=swap" rel="stylesheet" />
+ 
+    
    
 </head>
 
-<body id="display-drawer">
+<body >
     <div class="main-container card">
         <!-- Navbar Section -->
         <header class="navbar">
             <div class="global-nav">
                 <div class="nav">
-                    <div class="left">
+                    <div class="left" >
                         <a href="/" class="logo">
                             <!--<svg class="_8pSp-" viewBox="0 0 559 825" height="49" width="34" fill="#fc8019">
                                 <path fill-rule="evenodd" clip-rule="evenodd"
@@ -2269,7 +2269,7 @@
                             <span class="arrow-down"><i class="fa-solid fa-angle-down"></i></span>
                         </div> -->
                     </div>
-                    <div class="right">
+                    <div class="right" style="left:100px">
                         <ul class="items">
                             <li>
                                 <div class="nav-item">
@@ -2360,7 +2360,10 @@
        {% endblock %}
 
        
-        <!-- Footer Section -->
+       
+       
+       
+       <!-- Footer Section -->
         <footer class="footer">
             <div class="footer-content">
                 <div class="points">
@@ -2388,82 +2391,7 @@
                 </div>
             </div>
         </footer>
-
-       <!--<form  method="post" enctype="multipart/form-data">
-        <div id=loginbutton class="login_Container">
-            <div class="login_cut"><button onclick="closeButton('loginbutton')">X</button></div>
-            <div>
-                <div class="login_create">
-                    <h1>Login</h1>
-                    <p>or <span><a onclick ='return showsignup()'>create an account</a></span></p>
-                    <div>___</div>
-                </div>
-            </div>
-            <div class="login_input">
-                <input type="text" placeholder='username' />
-                <input type="password" placeholder='password' />
-            </div>
-            <div class="login_btn">
-                <button onclick="/login/">LOGIN</button>
-                <p>By clicking on Login, I accept the Terms & Conditions & Privacy Policy</p>
-            </div>
-        </div>
-    </form>
-
-    <form  method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <div id="signupbutton" class="login_Container">
-            <div class="login_cut"><button onclick="closeButton('signupbutton')">X</button></div>
-            <div>
-                <div class="login_create">
-                    <h1>Signup</h1>
-                    <p>or <span><a href="/login/">login to your account</a></span></p>
-                    <p>or <span><a onclick ='return showLogin()'>login to your account</a></span></p> 
-                    <div>___</div>
-                </div>
-            </div>
-            <div class="login_input">
-                <input type="text" placeholder='Name' name='name'  />
-                <input type="email" placeholder='Email' name='email'  />
-                <input type="password" placeholder='Password' name='password' />
-            </div>
-            <div class="login_btn">
-                <button type="submit">SIGNUP</button>
-                <p>By creating an account, I accept the Terms & Conditions & Privacy Policy</p>
-            </div>
-        </div>
-    </form>
-
- <script>
-
-    function showLogin()
-    {
-        debugger;
-        lg=document.getElementById('loginbutton')
-        lg.style.display='block';
-        lgo=document.getElementById('signupbutton')
-        lgo.style.display='none';
-    }
-    
-    function showsignup()
-    {
-        
-        lgo=document.getElementById('signupbutton')
-        lgo.style.display='block';
-        lg=document.getElementById('loginbutton')
-        lg.style.display='none';
-    }
-  function closeButton(id)
-  {
-    debugger;
- // var closeButton = document.querySelector(".login_Container");
- var closeButton = document.getElementById(id);
-   closeButton.addEventListener("click", function () {
-     //closeButton.hidden=true;  
-     closeButton.style.display = "none";
-      });
-  }
-  </script>  -->
-</body>
+    </div>
+ </body>
 
 </html>

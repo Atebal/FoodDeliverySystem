@@ -6,7 +6,10 @@ from django.http import HttpResponseBadRequest
 # Create your views here.
 
 def fooditems(request):
-    return render(request,"food.html")
+    items=Item.objects.all()
+    context={'items':items}
+    return render(request,"food.html",context)
+    
 
 def foodmenu(request):
      items=Item.objects.all()
