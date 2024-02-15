@@ -94,18 +94,19 @@ def createGroups():
 
 def assignpermission():
     tblobj=[Employee,Item,EmployeeOrderHistory,Payment,AddressTable,Transactions,orders,User]
-    notEmployeepermissions=['delete_employee','delete_item','delete_employeeorderhistory','delete_payment','delete_transactions','delete_user','delete_addresstable',
+    notEmployeepermissions=['delete_employee','delete_item','add_item','delete_employeeorderhistory','delete_payment','delete_transactions','delete_user','delete_addresstable',
                             'change_item','change_employeeorderhistory','change_payment','change_transactions','change_user']
     
     admins_group= Group.objects.get(name='CMSAdmin')
     employee_group=Group.objects.get(name='CMSEmployee')
     isEmployee=True
-    if(isEmployee==True):
+    if(isEmployee):
         for obj in tblobj:
             content_type=ContentType.objects.get_for_model(obj)
             obj_permission=Permission.objects.filter(content_type=content_type)
             for perm in obj_permission:
-                if perm not in notEmployeepermissions:
+                if perm.codename not in notEmployeepermissions:
+                    print("adding permission Employee"+ perm.codename)
                     employee_group.permissions.add(perm)
                     employee_group.save()
     else:
@@ -113,6 +114,7 @@ def assignpermission():
             content_type=ContentType.objects.get_for_model(obj)
             obj_permission=Permission.objects.filter(content_type=content_type)
             for perm in obj_permission:
+                    print("Admin adding permission"+ perm.codename)
                     admins_group.permissions.add(perm)
                     admins_group.save() 
                       
@@ -134,7 +136,25 @@ def assignGroups(username,isEmployee):
 #user = User.objects.get(username="admin")
 #group = Group.objects.get(name="CMSAdmin")
 #is_member = group in user.groups.all()
-        
+# Group.objects.get(name="CMSEmployee").permissions.all()
+# permissions=Permission.objects.get(codename="add_item")
+# grp.permissions.remove(permissions)
+ #grp=Group.objects.get(name="CMSEmployee")  
+
+'''
+--Add user to the group
+user = User.objects.get(username="username")
+group = Group.objects.get(name="group_name")
+group.user_set.add(user)
+group.save()
+
+--get permissions of the user
+user = User.objects.get(username="username")
+permissions = user.user_permissions.all()
+for permission in permissions:
+    print(permission)
+    
+'''
 
     
 
