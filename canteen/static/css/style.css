@@ -14,24 +14,25 @@
     left: 0;
     right: 0;
     height: 80px;
-    background: #fff;
+    background: rgb(255 255 255 / 80%);
+    backdrop-filter: blur(50px);
     z-index: 1000;
     padding: 0 20px;
-  }
+}
   .navbar .nav {
-    max-width: 1200px;
-    min-width: 1200px;
+    min-width: calc(100vw - 250px);
     position: relative;
     margin: 0 auto;
     height: 80px;
-    background: #fff;
+    /* background: #fff; */
     display: flex;
     justify-content: space-between;
-  }
-  .navbar .left {
-    display: flex;
-    align-items: center;
-  }
+}
+.navbar .left {
+  display: flex;
+  align-items: center;
+  margin-left: 95px;
+}
   .navbar .left .logo {
     display: block;
     height: 49px;
@@ -125,14 +126,14 @@
   
   /* Content Section */
   .restaurants .container {
-    max-width: 1200px;
-    min-width: 1200px;
+    /* max-width: 1200px; */
+    min-width: 1500px;
     position: relative;
     margin: 0 auto;
-    /*padding-top: 42px;
-    top: 80px; */
+    padding-top: 42px;
+    /*top: 80px; */
     background: #fff;
-    left: 31px;
+    /* left: 31px; */
   }
   .container .item-bar {
     display: flex;
@@ -474,21 +475,20 @@
   margin-top: 2px;
 }
 
-.forLogoutBox{
+.forLogoutBox {
   background-color: #fff;
   box-shadow: 0 0 4px 4px rgba(0, 0, 0, 0.2);
-  position: fixed;
+  position: absolute;
   top: 60px;
-  width: 15%;
-  right: 14%;
+  width: 200px;
   height: 200px;
   z-index: 999;
   border-top: 4px solid #FC8019;
   text-align: left;
   font-weight: 500;
   line-height: 40px;
-  display:none;
-   }
+  display: none;
+}
 
 .forLogoutBox> div {
   cursor: pointer;

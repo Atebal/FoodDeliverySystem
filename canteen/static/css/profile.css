@@ -3,7 +3,10 @@ body {
 }
 
 .padding {
-    padding: 3rem !important
+    padding: 3rem !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .user-card-full {
