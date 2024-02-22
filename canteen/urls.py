@@ -41,6 +41,7 @@ urlpatterns = [
         path('addorder/', addordersdetail,name='addorder'),
         path('deleteorder/', deletecartitem,name='deleteorder'),
         path('checkout/', checkout,name='checkout'),
+        path('assignroles/', assignroles,name='assignroles'),
         path('admin/', admin.site.urls),
 ]
 

@@ -191,4 +191,41 @@ def editUseradmin(request):
         return render(request,"users.html",context)
     return redirect (request,"/adminpanel")
 
+def assignroles(request):
+    if request.method=='POST':
+        username=request.POST.get('username')
+        isEmploye=request.POST.get('isEmployee')
+
+        if(isEmploye):
+            user = User.objects.get(username=username)
+            group = Group.objects.get(name="CMSEmployee")
+            group.user_set.add(user)
+            group.save()
+        elif (isEmploye==False):
+            user = User.objects.get(username=username)
+            group = Group.objects.get(name="CMSAdmin")
+            group.user_set.add(user)
+            group.save()
+    user_groups={}
+    usersa=[]
+    users = User.objects.all()
+
+            # Loop through each user
+    for user in users:
+
+            # Get the group names associated with the user
+        group_names = [group.name for group in user.groups.all()]
+        user_groups={'username':user,'group':group_names}
+        usersa.append(user_groups)
+
+        #return render()
+    #users=User.objects.all()        
+   # queryset=User.objects.all().values(
+    #        'username', 'id','employee__firstname','employee__last_name','employee__email','employee__mobile','addresstable__state','payment__balance'
+    #        )
+    context={'users':usersa}
+    return render(request,"userroles.html",context)
+
+
+
 

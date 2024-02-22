@@ -156,7 +156,17 @@ for permission in permissions:
     
 '''
 
-    
+def getusergroups():
+    users = User.objects.all()
+
+# Loop through each user
+    for user in users:
+
+    # Get the group names associated with the user
+        group_names = [group.name for group in user.groups.all()]
+
+        # Print the group names
+        print(user,group_names)
 
 def deleteGroups():
     groupname=["CMSAdmin","CMSEmployee"]
