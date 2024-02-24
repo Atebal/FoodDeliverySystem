@@ -47,11 +47,11 @@
                                         <tr>
                                             <td>{{usr.username}}</td>
                                             <td>{{usr.group}}</td>
-                                            <td><input id="empchk_{{usr.id}}" type="checkbox"> </td>
-                                            <td><input id="adminchk_{{usr.id}}" type="checkbox"> </td>
-                                            <td><button id="a_{{usr.id}}" onclick=assignroles(id) class="btn btn-success"><i
+                                            <td><input id="empchk_{{usr.username}}" type="checkbox"> </td>
+                                            <td><input id="adminchk_{{usr.username}}" type="checkbox"> </td>
+                                            <td><button id="a_{{usr.username}}" onclick=assignroles(id) class="btn btn-success"><i
                                                 class="bi bi-pencil"></i></button>
-                                        <button id="r_{{usr.id}}" onclick=removeroles() class="btn btn-danger"><i
+                                        <button id="r_{{usr.username}}" onclick=removeroles(id) class="btn btn-danger"><i
                                                 class="bi bi-trash3"></i></button>
                                     </td>
                                         </tr>
@@ -115,7 +115,40 @@
                     });
                 });
             }
+        
+            function removeroles(id) {
+                debugger;
+                var table = $('#bootstrap-data-table').DataTable();
+                var csrfToken = '{{ csrf_token }}'; // Obtain CSRF token from Django template
+                debugger;
+                var username;
 
+                $('#bootstrap-data-table tbody').on('click', 'tr', function (e) {
+                    debugger;
+                    e.preventDefault();
+                    username = table.row(this).data()[0];
+                     // Assuming username is the first column
+                   
+                    isEmployee=$('#empchk_'+id.substr(2))[0].checked;
+                    isAdmin=$('#adminchk_'+id.substr(2))[0].checked;
+                    $.ajax({
+                        type: 'POST',
+                        url: '/removeroles/',
+                        data: {
+                            'username': username,
+                            'isEmployee':isEmployee,
+                            'isAdmin':isAdmin,
+                            'csrfmiddlewaretoken': csrfToken
+                        },
+                        success: function (response) {
+                            $('#divpages').html(response);
+                        },
+                        error: function (xhr, status, error) {
+                            console.error(xhr.responseText);
+                        }
+                    });
+                });
+            }
 
 
         function purchaseitem()

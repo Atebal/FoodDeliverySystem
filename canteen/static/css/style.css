@@ -512,3 +512,27 @@
   text-align: center;
   font-size: 80px;
 }
+
+
+.register_create {
+  text-align: left;
+  font-size: 10px;
+}
+.register_create > h1 {
+  margin-bottom: 5px;
+  font-size: 1.5rem;
+}
+
+.register_input {
+  text-align: left;
+  margin-top: 0px;
+}
+
+.register_input > input {
+  border: 1px solid lightgray;
+  padding: 18px 15px;
+  font-size: 20px;
+  outline: none;
+  width: 80%;
+ 
+}

@@ -26,7 +26,8 @@ def login_page(request):
             #return redirect('/login/')
         else:
             login(request,user)
-            return redirect('/')
+            
+            return JsonResponse({'message':'Login Success'},safe=False)
 
     return render(request,"login.html")
 
@@ -39,6 +40,10 @@ def register(request):
         last_name=request.POST.get('last_name')
         mobile=request.POST.get('mobile')
 
+        user=User.objects.filter(username=username)
+        if user.exists():
+            return JsonResponse({'message':'user already exists'},safe=False)
+            
         user=User.objects.create(
                 username=username,
                 email=email
@@ -55,35 +60,15 @@ def register(request):
 
         )
         employee.save()
+     
+        return JsonResponse({'message':'ok'},safe=False)
 
-       
-        messages.info(request,'Account created Successfully')
-        return redirect('/')
-
-    return render(request,"register.html")
-    
-def dipslayUsers(request):
-    return render(request,"users.html")
+    return render(request,"register.html") 
 
 def logoutusr(request):
     logout(request)
     return redirect('/')
-    
-
-def assign_userRoleadmin(request):
-    cmstables=[User,Employee,Item,EmployeeOrderHistory,Payment,AddressTable]
-    for tbls in cmstables:
-        content_type=ContentType.objects.get_for_model(tbls)
-        employee_permission=Permission.objects.filter(content_type=content_type)
-        print([perm.codename for perm in employee_permission])
-    
-   
-
-def displayEmployeeInfo(request):
-    content_type=ContentType.objects.get_for_model(Employee)
-    employee_permission=Permission.objects.filter(content_type=content_type)
-    print([perm.codename for perm in employee_permission])
-
+ 
 def updateUserDetailsEmployee(request):
     queryset=User.objects.get(id=id)
     context={'user':queryset}
@@ -195,37 +180,58 @@ def assignroles(request):
     if request.method=='POST':
         username=request.POST.get('username')
         isEmploye=request.POST.get('isEmployee')
+        isAdmin=request.POST.get('isAdmin')
 
-        if(isEmploye):
+        if(isEmploye=='true'):
+            addusertoroles(username,"CMSEmployee")
+           
+        elif (isAdmin=='true'):
+            addusertoroles(username,"CMSAdmin")
+                
+    usersa=[]
+    usersa=  getuserRoles()
+    context={'users':usersa}
+    return render(request,"userroles.html",context)
+
+def removeroles(request):
+    if request.method=='POST':
+        username=request.POST.get('username')
+        isEmployee=request.POST.get('isEmployee')
+        isAdmin=request.POST.get('isAdmin')
+        if(isEmployee=='true'):
+            removeuser(username,'CMSEmployee')
+        if(isAdmin=='true'):
+            removeuser(username,'CMSAdmin')
+    
+    usersa=[]
+    usersa=  getuserRoles()
+       
+    context={'users':usersa}
+    return render(request,"userroles.html",context)
+
+def addusertoroles(username,rolename):
+    user = User.objects.get(username=username)
+    group = Group.objects.get(name=rolename)
+    group.user_set.add(user)
+    group.save()
+
+def removeuser(username,rolename):
+    # Assuming you already have a group and user defined
+            group = Group.objects.get(name=rolename)
             user = User.objects.get(username=username)
-            group = Group.objects.get(name="CMSEmployee")
-            group.user_set.add(user)
-            group.save()
-        elif (isEmploye==False):
-            user = User.objects.get(username=username)
-            group = Group.objects.get(name="CMSAdmin")
-            group.user_set.add(user)
-            group.save()
+            # Remove the user from the group
+            group.user_set.remove(user)
+
+def getuserRoles():
     user_groups={}
     usersa=[]
     users = User.objects.all()
 
-            # Loop through each user
+     # Loop through each user
     for user in users:
 
-            # Get the group names associated with the user
+        # Get the group names associated with the user
         group_names = [group.name for group in user.groups.all()]
         user_groups={'username':user,'group':group_names}
         usersa.append(user_groups)
-
-        #return render()
-    #users=User.objects.all()        
-   # queryset=User.objects.all().values(
-    #        'username', 'id','employee__firstname','employee__last_name','employee__email','employee__mobile','addresstable__state','payment__balance'
-    #        )
-    context={'users':usersa}
-    return render(request,"userroles.html",context)
-
-
-
-
+    return usersa

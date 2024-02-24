@@ -7,7 +7,7 @@
 {% block start %}
 <body>
     
-<form method="post" enctype="multipart/form-data">
+<form id="myform">
     {% csrf_token %}
   <div class="login_Container" >
         <div class="login_cut"><button type="submit"><a href="/">X</a></button></div>
@@ -23,7 +23,7 @@
             <input type="password" placeholder='password'  name="password"/>
         </div>
         <div class="login_btn">
-            <button type="submit">LOGIN</button>
+            <button  type="submit">LOGIN</button>
             <p>By clicking on Login, I accept the Terms & Conditions & Privacy Policy</p>
         </div>
     </div>
@@ -32,4 +32,53 @@
 </form>
     </body>
  {% endblock %}
+ 
+ <script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
+
+<script>
+
+
+/* login section */
+
+document.getElementById('myform').addEventListener('submit', function (event) {
+    event.preventDefault(); // Prevent default form submission
+    debugger;
+
+
+    // Get the form fields
+    var usernameField = document.getElementsByName('username')[0];
+    var passwordField = document.getElementsByName('password')[0];
     
+    // Get the values entered by the user
+    var username = usernameField.value;
+    var password = passwordField.value;
+    
+    // Create a FormData object and set the form data
+    var formData = new FormData();
+    formData.append('username', username);
+    formData.append('password', password);
+
+    var formData = new FormData(this);
+    $.ajax({
+        type: 'POST',
+        url: '/login/', // URL to send the request to
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (response) {
+            console.log("login successful");
+            window.location.href='/'
+        },
+        error: function (xhr, status, error) {
+            // Handle error response
+            console.error(xhr.responseText);
+        }
+    });
+});
+
+
+/*end login section*/
+
+
+
+</script>
