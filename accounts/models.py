@@ -68,6 +68,7 @@ class orders(models.Model):
     incart=models.BooleanField(default=False)
     paymentstatus=models.CharField(choices=choices,max_length=20,default='initiated')
     itemquantity=models.IntegerField(default=0)
+    isplacedbyadmin=models.BooleanField(default=False)
 
 
 

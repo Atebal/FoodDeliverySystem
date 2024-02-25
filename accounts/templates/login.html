@@ -3,6 +3,8 @@
 {% load static %}
 
 <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css" />
+<link rel="stylesheet" href="{% static 'css/rmessagestyle.css' %}" type="text/css" />
+<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.2/css/bootstrap.min.css'>
 
 {% block start %}
 <body>
@@ -33,18 +35,49 @@
     </body>
  {% endblock %}
  
- <script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
+ <div class="modal fade" id="statusErrorsModal" tabindex="-1" role="dialog" data-bs-backdrop="static" data-bs-keyboard="false"> 
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document"> 
+        <div class="modal-content"> 
+            <div class="modal-body text-center p-lg-4"> 
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+                    <circle class="path circle" fill="none" stroke="#db3646" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" /> 
+                    <line class="path line" fill="none" stroke="#db3646" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="34.4" y1="37.9" x2="95.8" y2="92.3" />
+                    <line class="path line" fill="none" stroke="#db3646" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="95.8" y1="38" X2="34.4" y2="92.2" /> 
+                </svg> 
+                <h4  id="hmessage" class="text-danger mt-3">Invalid email!</h4> 
+                <p  id="errmessage" class="mt-3"> please login.</p>
+                <button type="button" class="btn btn-sm mt-3 btn-danger" data-bs-dismiss="modal">Ok</button> 
+            </div> 
+        </div> 
+    </div> 
+</div>
+<div class="modal fade" id="statusSuccessModal" tabindex="-1" role="dialog" data-bs-backdrop="static" data-bs-keyboard="false"> 
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document"> 
+        <div class="modal-content"> 
+            <div class="modal-body text-center p-lg-4"> 
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+                    <circle class="path circle" fill="none" stroke="#198754" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" />
+                    <polyline class="path check" fill="none" stroke="#198754" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 " /> 
+                </svg> 
+                <h4 class="text-success mt-3">Welcome</h4> 
+                <p class="mt-3">You have successfully logged in.</p>
+                <!--<a href="/"><button type="button" class="btn btn-sm mt-3 btn-success" data-bs-dismiss="modal">Ok</button></a> -->
+            </div> 
+        </div> 
+    </div> 
+</div>
 
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/js/bootstrap.min.js'></script>
 <script>
 
 
 /* login section */
 
 document.getElementById('myform').addEventListener('submit', function (event) {
+    
     event.preventDefault(); // Prevent default form submission
-    debugger;
-
-
+debugger;
     // Get the form fields
     var usernameField = document.getElementsByName('username')[0];
     var passwordField = document.getElementsByName('password')[0];
@@ -66,8 +99,31 @@ document.getElementById('myform').addEventListener('submit', function (event) {
         processData: false,
         contentType: false,
         success: function (response) {
-            console.log("login successful");
-            window.location.href='/'
+            debugger;
+            if(response.message==='Invalid username')
+            {
+                $('#hmessage')[0].innerHTML="Inavalid Username";
+                $('#errmessage')[0].innerHTML="Please register yourself";
+                $('#statusErrorsModal').modal('show');
+            }
+
+            if(response.message==='Invalid password')
+            {
+                $('#hmessage')[0].innerHTML="Invalid password";
+                $('#errmessage')[0].innerHTML="Please check username and password ";
+                
+                $('#statusErrorsModal').modal('show');
+            }
+
+            if(response.message==='Login Success')
+            {
+                $('#statusSuccessModal').modal('show');
+                setTimeout(function() {
+                    window.location.href = '/';
+                    }, 2000);
+            }
+            //console.log("login successful");
+           // window.location.href='/'
         },
         error: function (xhr, status, error) {
             // Handle error response

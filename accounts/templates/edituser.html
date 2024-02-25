@@ -1,0 +1,111 @@
+
+{% load static %}
+
+<body>
+    <div class="modal fade" id="editusermodal" tabindex="-2" role="dialog" aria-labelledby="edituser" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit User</h5>
+                <button   type="button" id= "closebtn" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+          <form id="edituserform">
+                {% csrf_token %}
+            <div class="modal-body" style="height:450px;left:20%">
+                {% for user in users %}
+                    <div class="mb-3">
+                      <label class="form-label">Username</label>
+                      <input type="input" readonly class="form-control" style="width:75%" value="{{user.username}}" name="username">
+                      
+                    </div>
+                    <div class="mb-3">
+                      <label  class="form-label">First Name</label>
+                      <input type="input" class="form-control" style="width:75%" style="width:75%" value="{{user.employee__firstname}}" name="firstname">
+                    </div>
+                    <div class="mb-3">
+                        <label  class="form-label">Last Name</label>
+                        <input type="input" class="form-control" style="width:75%" value="{{user.employee__last_name}}" name="last_name">
+                      </div>
+                      <div class="mb-3">
+                        <label  class="form-label">Email</label>
+                        <input type="email" class="form-control" style="width:75%" style="width:75%" name="email" value="{{user.employee__email}}">
+                      </div>
+                      <div class="mb-3">
+                        <label  class="form-label">mobile</label>
+                        <input type="input" class="form-control" style="width:75%" readonly name="mobile" value="{{user.employee__mobile}}">
+                      </div>
+                     {% endfor %}             
+            </div>
+            <div class="modal-footer">
+              <button id="edituderbtn"  class="btn btn-secondary" type="submit">Submit</button>
+         </div>
+        </form> 
+            
+        
+          </div>
+     </div>
+    </div>
+  
+
+   
+    </body>
+   
+    <script>
+debugger;
+document.getElementById('edituserform').addEventListener('submit', function (event) {
+    event.preventDefault(); // Prevent default form submission
+    debugger;
+
+
+    // Get the form fields
+    var usernameField = document.getElementsByName('username')[0];
+    var firstnameField = document.getElementsByName('firstname')[0];
+    var last_nameField = document.getElementsByName('last_name')[0];
+    var emailField = document.getElementsByName('email')[0];
+    var mobileField = document.getElementsByName('mobile')[0];
+   // var passwordField = document.getElementsByName('password')[0];
+    
+    // Get the values entered by the user
+    var username = usernameField.value;
+    var firstname = firstnameField.value;
+    var last_name = last_nameField.value;
+    var email = emailField.value;
+    var mobile = mobileField.value;
+   //var password = passwordField.value;
+    // Create a FormData object and set the form data
+    var formData = new FormData();
+    formData.append('username', username);
+    formData.append('firstname', firstname);
+    formData.append('last_name', last_name);
+    formData.append('email', email);
+    formData.append('mobile', mobile);
+    //formData.append('password', password);
+
+    var formData = new FormData(this);
+    $.ajax({
+        type: 'POST',
+        url: '/edituser/', // URL to send the request to
+        processData: false,
+        contentType: false,
+        data: formData,
+        success: function (response) {
+            debugger;
+            
+            setTimeout(function() {
+              $('#hcart')[0].innerHTML="Success"
+              $('#pcart')[0].innerHTML="Successfully Updated user details!!!"
+                $('#statusSuccessModal').modal('show');
+                    }, 2000);
+                    $(".modal-backdrop").remove();
+                    $('#divpages').html(response)
+        },
+        error: function (xhr, status, error) {
+            // Handle error response
+            
+        }
+    });
+});
+
+    </script>

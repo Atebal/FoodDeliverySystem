@@ -5,6 +5,7 @@
    
     <link rel="stylesheet" href="{% static 'css/addtocart.css' %}" type="text/css" />
     <link rel="stylesheet" href="{% static 'css/cart.css' %}" type="text/css" />
+    <link rel="stylesheet" href="{% static 'css/rmessagestyle.css' %}" type="text/css" />
     
 
 <main class="main-container">
@@ -65,19 +66,38 @@
 
     </main>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <div class="modal fade" id="statusSuccessModal" tabindex="-1" role="dialog" data-bs-backdrop="static" data-bs-keyboard="false"> 
+        <div class="modal-dialog modal-dialog-centered modal-sm" role="document"> 
+            <div class="modal-content"> 
+                <div class="modal-body text-center p-lg-4"> 
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+                        <circle class="path circle" fill="none" stroke="#198754" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" />
+                        <polyline class="path check" fill="none" stroke="#198754" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 " /> 
+                    </svg> 
+                    <h4 id="hcart" class="text-success mt-3">Oh Yeah!</h4> 
+                    <p id="pcart" class="mt-3">You have successfully registered and logged in.</p>
+                    <a href="/"><button type="button" class="btn btn-sm mt-3 btn-success" data-bs-dismiss="modal">Ok</button></a> 
+                </div> 
+            </div> 
+        </div> 
+    </div>
+
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/js/bootstrap.min.js'></script>
+    <!--<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> -->
 
     <script>
 
-        function closemodal()
+        /*function closemodal()
         {
             debugger;
             $("#exampleModal").modal('hide');
            $(".modal-backdrop").remove();
-        }
+        }*/
         
+    $(document).on('click', '#exampleModal [data-dismiss="modal"]', function() {
+        $('#exampleModal').modal('hide');
+        });
         
         function quickview(id)
                 {
@@ -90,7 +110,7 @@
                         data:{"id":id},
                         success: function (response) {
                              $('#foodmenu').html(response);
-                            $('#exampleModal').modal('show');
+                             $('#exampleModal').modal('show');
                             
                            
                             //data-toggle="modal"  data-target="#exampleModal"
@@ -103,9 +123,15 @@
                 }
         
         function addorderitems(id){
-        
+        debugger;
+            isAdminplaced=localStorage.getItem('isadminShoppingforEmployee')
+            employeename=localStorage.getItem('customername')
+
             var qty=$("#pqty_"+id)[0].innerText
             var csrfToken = '{{ csrf_token }}';
+            cartcount=0;
+
+            //Number(document.getElementById("cart-count").textContent)
         
             $.ajax({
                         url: '/addorder/',  // URL to the Django view
@@ -113,11 +139,26 @@
                         data:{
                             "id":id,
                             "itemquantity":qty,
+                            'cartcount':cartcount,
+                            'isAdminplaced':isAdminplaced,
+                            'employeename':employeename,
                             'csrfmiddlewaretoken': csrfToken
                         },
                         
                         success: function (response) {
+                            debugger;
                             
+                            document.getElementById("cart-count").textContent=response.cartcount
+
+                            $("#exampleModal").modal('hide');
+                            $(".modal-backdrop").remove();
+
+                            if(response.message==='order added')
+                                {
+                                    $('#hcart')[0].innerHTML="order added Successfully!!";
+                                    $('#pcart')[0].innerHTML="Please check your cart";
+                                    $('#statusSuccessModal').modal('show');
+                                }
                               // Insert rendered HTML into div
                         },
                         error: function (error) {

@@ -1,19 +1,31 @@
 from django.shortcuts import render,redirect
 from accounts.models import *
 import json
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponseBadRequest,JsonResponse
 
 # Create your views here.
 
 def fooditems(request):
     items=Item.objects.all()
-    context={'items':items}
+    cartcount=0
+    orderscount=orders.objects.filter(username=request.user.id,paymentstatus='initiated').values('itemquantity')
+    for ordercnt in  orderscount:
+           cartcount= ordercnt['itemquantity'] + cartcount  
+
+    context={'items':items,'cartcount':cartcount}
+     
     return render(request,"food.html",context)
     
 
 def foodmenu(request):
      items=Item.objects.all()
-     context={'items':items}
+     
+     cartcount=0
+     orderscount=orders.objects.filter(username=request.user.id,paymentstatus='initiated').values('itemquantity')
+     for ordercnt in  orderscount:
+           cartcount= ordercnt['itemquantity'] + cartcount  
+
+     context={'items':items,'cartcount':cartcount}
      return render(request,"todaysmenu.html",context)
 
 def getitemdetails(request):
@@ -21,8 +33,9 @@ def getitemdetails(request):
     id=query_string['id']
     #itemid=json.loads(query_string)
     item=Item.objects.get(id=id)
+    
     context={'item':item}
-         
+    
     return render(request,"clickedfooditem.html",context)
 
 
@@ -87,32 +100,45 @@ def checkout(request):
 
 #add user selected food receipe
 def addordersdetail(request):
+    
     if request.method=="POST":
         receipeid=request.POST.get('id')
         qty=request.POST.get('itemquantity')
-        username=User.objects.get(id=request.user.id)
-        receipe=Item.objects.get(id=receipeid)
-        order=orders.objects.create(
-            username=username,
-            receipeid=receipe,
-            itemquantity=qty,
-            incart=True,
-            paymentstatus='initiated'
-        )
-        order.save()
-    return redirect('/menuitem')
+        #cartcount=request.POST.get('cartcount')
+        isAdminplaced=request.POST.get('isAdminplaced')
+        employeename=request.POST.get('employeename')
+        currentuser=request.user
+        if (isAdminplaced=='true'):
+                orderplaced(receipeid,qty,employeename,True)
+                cartcount=carcount(employeename,True)
+                return JsonResponse({'message':'order added','cartcount':cartcount},safe=False)
+        elif(isAdminplaced=='false' or isAdminplaced==''):
+            orderplaced(receipeid,qty,currentuser,False)
+            cartcount=carcount(currentuser,False)
+            return JsonResponse({'message':'order added','cartcount':cartcount},safe=False)
+
 
 def deletecartitem(request):
-   userid=request.user.id
+   
    orderid=request.GET.get('orderid')
-   orders.objects.filter(orderid=orderid).delete()
-   order_items = orders.objects.filter(username=userid).select_related('receipeid').values(
-                                'receipeid__itemName','receipeid__price','receipeid__receipe','receipeid__image',
-                                'itemquantity','receipeid')
-    
-   context={'items':order_items}
-    
-   return render(request,"itemcart.html",context) 
+   currentuser=request.user
+   isAdminplaced=request.POST.get('isAdminplaced')
+   employeename=request.POST.get('employeename')
+   #orders.objects.filter(orderid=orderid).delete()
+   if (isAdminplaced=='true'):
+       orders.objects.filter(orderid=orderid,isplacedbyadmin=True).delete()
+       
+       return JsonResponse({'message':'item deleted'},safe=False)
+        
+   elif(isAdminplaced=='false' or isAdminplaced==''):
+        orders.objects.filter(orderid=orderid,isplacedbyadmin=False).delete()
+        
+        return JsonResponse({'message':'item deleted'},safe=False)
+   elif(isAdminplaced==None):
+        orders.objects.filter(orderid=orderid,isplacedbyadmin=False).delete()
+        
+        return JsonResponse({'message':'item deleted'},safe=False)
+  
 
 # add receipe details inserted by admin
 def addfooditem(request):
@@ -147,3 +173,40 @@ def updatereceipe(request):
         )
         return redirect('/')
     return redirect('/')
+
+
+#helper function to saving the the orders
+def orderplaced(receipeid,qty,username,orderbyadmin):
+        username=User.objects.filter(username=username).values('id')
+        userid=username[0]['id']
+        username=User.objects.get(id=userid)
+        receipe=Item.objects.get(id=receipeid)
+        order=orders.objects.create(
+            username=username,
+            receipeid=receipe,
+            itemquantity=qty,
+            incart=True,
+            paymentstatus='initiated',
+            isplacedbyadmin=orderbyadmin
+        )
+        order.save()
+
+#helper function to get the cartcount
+def carcount(username,orderbyadmin):
+     cartcount=0
+     username=User.objects.filter(username=username).values('id')
+     userid=username[0]['id']
+     orderscount=orders.objects.filter(username=userid,paymentstatus='initiated',isplacedbyadmin=orderbyadmin).values('itemquantity')
+     for ordercnt in  orderscount:
+           cartcount= ordercnt['itemquantity'] + cartcount
+     return cartcount
+
+ #helper function to get the details of orders in cart   
+def getitemsincart(username,orderbyadmin):
+     username=User.objects.filter(username=username).values('id')
+     userid=username[0]['id']
+     order_items = orders.objects.filter(username=userid,isplacedbyadmin=orderbyadmin,paymentstatus='initiated').select_related('receipeid').values(
+                                'receipeid__itemName','receipeid__price','receipeid__receipe','receipeid__image',
+                                'itemquantity','receipeid')
+     return order_items
+     

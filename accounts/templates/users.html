@@ -57,9 +57,9 @@
                                             <td>{{usr.employee__email}}</td>
                                             <td>{{usr.payment__balance}}</td>
                                             <td onclick=purchaseitem()><a href="#">Items</a></td>
-                                            <td><button onclick=edituser() class="btn btn-success"><i
+                                            <td><button type="button" class="btn btn-primary"  onclick=getuserdetails()><i
                                                         class="bi bi-pencil"></i></button>
-                                                <button onclick=deleteuser() class="btn btn-danger"><i
+                                                <button onclick=deleteuser()  class="btn btn-danger"><i
                                                         class="bi bi-trash3"></i></button>
                                             </td>
                                         </tr>
@@ -78,16 +78,41 @@
 
 
     <div class="clearfix"></div>
-
+   
     </div><!-- /#right-panel -->
+ 
+  <div id="divpopedit">
 
-    <!-- Right Panel -->
+  </div>
 
+    <div class="modal fade" id="statusSuccessModal" tabindex="-1" role="dialog" data-bs-backdrop="static" data-bs-keyboard="false"> 
+        <div class="modal-dialog modal-dialog-centered modal-sm" role="document"> 
+            <div class="modal-content"> 
+                <div class="modal-body text-center p-lg-4"> 
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+                        <circle class="path circle" fill="none" stroke="#198754" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" />
+                        <polyline class="path check" fill="none" stroke="#198754" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 " /> 
+                    </svg> 
+                    <h4 id="hcart" class="text-success mt-3">Success!!!</h4> 
+                    <p id="pcart" class="mt-3">You have successfully registered and logged in.</p>
+                    <button type="button" class="btn btn-sm mt-3 btn-success" data-bs-dismiss="modal">Ok</button>
+                </div> 
+            </div> 
+        </div> 
+    </div>
+
+
+    
     <!-- Scripts -->
    
 
 
     <script type="text/javascript">
+
+
+    $(document).on('click', '#editusermodal [data-dismiss="modal"]', function() {
+        $('#editusermodal').modal('hide');
+        });
 
         function purchaseitem()
         {
@@ -97,10 +122,10 @@
                     debugger;
                     e.preventDefault();
             username = table.row(this).data()[0];
-            flag=true
+            isadminShoppingforEmployee=true
             localStorage.clear()
             localStorage.setItem('customername',username)
-            localStorage.setItem('flag',flag)
+            localStorage.setItem('isadminShoppingforEmployee',isadminShoppingforEmployee)
             window.location.href = '/menuitem/';
         });
             
@@ -125,7 +150,17 @@
                             'csrfmiddlewaretoken': csrfToken
                         },
                         success: function (response) {
-                            $('#divpages').html(response);
+                          //  $('#divpages').html(response);
+                            debugger;
+                           
+                                    $('#hcart')[0].innerHTML="user deleted ";
+                                    $('#pcart')[0].innerHTML="user deleted Successfully!!";
+                                    $('#statusSuccessModal').modal('show');
+                               
+                                setTimeout(function() {
+                                    $('#statusSuccessModal').modal('hide');
+                                        $('#divpages').html(response);
+                                    }, 2000);
                         },
                         error: function (xhr, status, error) {
                             console.error(xhr.responseText);
@@ -138,35 +173,28 @@
 
         
 
-        function edituser() {
+        function getuserdetails() {
 
-            document.getElementById('myform').addEventListener('submit', function (event) {
-                debugger;
-                event.preventDefault(); // Prevent default form submission
-                var formData = new FormData(this);
+            var table = $('#bootstrap-data-table').DataTable();
+                var csrfToken = '{{ csrf_token }}'; // Obtain CSRF token from Django template
+                var username;
+
+                $('#bootstrap-data-table tbody').on('click', 'tr', function (e) {
+                    debugger;
+                    e.preventDefault();
+                    username = table.row(this).data()[0];
+
                 $.ajax({
-                    type: 'POST',
-                    url: '/edituser/', // URL to send the request to
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function (response) {
-                                 debugger;             
-
-                        $.ajax({
                     type: 'GET',
-                    url: '/users/', // Example URL to fetch users
-                    success: function (data) {
-                        // Handle success response of the GET request
-                        console.log('Users retrieved successfully:', data);
-                        $('#divpages').html(response);
-                        // Update the UI or perform any other action with the retrieved data
+                    url: '/edituser/', // URL to send the request to
+                    data: {
+                        'username':username
                     },
-                    error: function (xhr, status, error) {
-                        // Handle error response of the GET request
-                        console.error('Error retrieving users:', error);
-                    }
-                });
+                    success: function (response) {
+                                 debugger; 
+                                 $('#divpopedit').html(response)
+                                 $('#editusermodal').modal('show');            
+
             },
                     
                     error: function (xhr, status, error) {
@@ -176,6 +204,10 @@
                 });
             });
         }
+
+
+    
+
 
     </script>
 

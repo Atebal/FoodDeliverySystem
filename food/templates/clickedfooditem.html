@@ -8,7 +8,7 @@
         {% csrf_token %}
         <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">{{item.itemName}}</h5>
-            <button  onclick=closemodal() type="button" id= "closebtn" class="close" data-dismiss="modal" aria-label="Close">
+            <button   type="button" id= "closebtn" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
@@ -86,10 +86,11 @@
 </form>
 
 
+<!--
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
+-->
 <script>
 
 
@@ -111,6 +112,8 @@ $addQuantity.on("click", function (e) {
 
   $item.find(".quantity_field").val(nextQuantity)
   $quantityField.val(nextQuantity);
+  //update value to cart
+
 
   $item.find(".mult")[0].innerText="₹ "+ Number(price)*nextQuantity
 
@@ -131,6 +134,9 @@ $minusQuantity.on("click", function (e) {
   $item.find(".quantity_field").val(nextQuantity)
 
   $quantityField.val(prevQuantity);
+
+  
+
   $item.find(".mult")[0].innerText="₹ " + Number(price)*prevQuantity
   //calculateTotal();
 });

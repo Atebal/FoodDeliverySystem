@@ -16,14 +16,14 @@ def login_page(request):
         
 
         if not User.objects.filter(username=username).exists():
-            messages.info(request,'Invalid username')
-            return redirect('/register/')
+           # messages.info(request,'Invalid username')
+            return JsonResponse({'message':'Invalid username'},safe=False)
         
         user=authenticate(username=username,password=password)
 
         if user is None:
-            messages.error("Invalid password")
-            #return redirect('/login/')
+            #messages.error("Invalid password")
+            return JsonResponse({'message':'Invalid password'},safe=False)
         else:
             login(request,user)
             
@@ -157,24 +157,36 @@ def deleteuser(request):
             'username', 'employee__firstname','employee__last_name','employee__email','employee__mobile','addresstable__state','payment__balance'
             )
         context={'users':queryset}
+        #json_response=JsonResponse({'message':'user deleted'})
         return render(request,"users.html",context)
-        #return JsonResponse({'message':'user deleted successfully'},safe=False)
+        #return JsonResponse({'message':'user deleted'},safe=False)
     
     return redirect (request,"/adminpanel")
 
 def editUseradmin(request):
+    username=username=request.GET.get('username')
+    queryset=User.objects.filter(username=username).values(
+            'username', 'employee__firstname','employee__last_name','employee__email','employee__mobile'
+            )
+    
     if request.method=='POST':
         username=request.POST.get('username')
         firstname=request.POST.get('firstname')
         last_name=request.POST.get('last_name')
         email=request.POST.get('email')
-        id=User.objects.filter(usernam=username).values('id')
-        Employee.objects.filter(username=id).update(firstname=firstname,last_name=last_name,email=email)
+        id=User.objects.filter(username=username).values('id')
+        Employee.objects.filter(username=id[0]['id']).update(firstname=firstname,last_name=last_name,email=email)
         User.objects.filter(username=username).update(email=email)
-        users=User.objects.all()
-        context={'users':users}
-        return render(request,"users.html",context)
-    return redirect (request,"/adminpanel")
+        
+        queryset=User.objects.all().values(
+            'username', 'employee__firstname','employee__last_name','employee__email','employee__mobile','addresstable__state','payment__balance'
+            )
+        context={'users':queryset}
+
+        return render(request,'users.html',context)
+    
+    context={'users':queryset}
+    return render (request,"edituser.html",context)
 
 def assignroles(request):
     if request.method=='POST':
@@ -185,7 +197,7 @@ def assignroles(request):
         if(isEmploye=='true'):
             addusertoroles(username,"CMSEmployee")
            
-        elif (isAdmin=='true'):
+        if (isAdmin=='true'):
             addusertoroles(username,"CMSAdmin")
                 
     usersa=[]
