@@ -124,8 +124,25 @@
         
         function addorderitems(id){
         debugger;
-            isAdminplaced=localStorage.getItem('isadminShoppingforEmployee')
-            employeename=localStorage.getItem('customername')
+        isAdminplaced=false;
+        employeename=false;
+        var username;
+            if('{{request.user}}'=='admin' && localStorage.getItem('isadminShoppingforEmployee')=='true')
+            {
+                    isAdminplaced=localStorage.getItem('isadminShoppingforEmployee')
+                    employeename=localStorage.getItem('customername')
+                    var expirationDate = new Date();
+                    expirationDate.setDate(expirationDate.getDate() + 30);
+                    document.cookie = 'isAdminplaced='+isAdminplaced +'; expires=' + expirationDate.toUTCString()
+                    document.cookie = 'employeename='+employeename +'; expires=' + expirationDate.toUTCString()
+                    
+                   // request.session['employeename']=localStorage.getItem('customername')
+                
+            }
+            else
+            {
+                localStorage.clear();
+                }
 
             var qty=$("#pqty_"+id)[0].innerText
             var csrfToken = '{{ csrf_token }}';
@@ -157,7 +174,7 @@
                                 {
                                     $('#hcart')[0].innerHTML="order added Successfully!!";
                                     $('#pcart')[0].innerHTML="Please check your cart";
-                                    $('#statusSuccessModal').modal('show');
+                                   // $('#statusSuccessModal').modal('show');
                                 }
                               // Insert rendered HTML into div
                         },

@@ -6,6 +6,8 @@ from django.http import HttpResponseBadRequest,JsonResponse
 # Create your views here.
 
 def fooditems(request):
+    isAdminplaced=request.COOKIES.get('isAdminplaced')
+    employeename=request.COOKIES.get('employeename')
     items=Item.objects.all()
     cartcount=0
     orderscount=orders.objects.filter(username=request.user.id,paymentstatus='initiated').values('itemquantity')
@@ -38,14 +40,27 @@ def getitemdetails(request):
     
     return render(request,"clickedfooditem.html",context)
 
+def ordersuccess(request):
+    return render(request,"orderplaced.html")
 
 def itemcart(request):
     userid=request.user.id
-      
-    order_items = orders.objects.filter(username=userid,incart=True).select_related('receipeid').values(
-                                'receipeid__itemName','receipeid__price','receipeid__receipe','receipeid__image',
-                                'itemquantity','receipeid','orderid','receipeid__id')
+    isAdminplaced=request.POST.get('isAdminplaced')
+    employeename=request.POST.get('employeename')
     
+
+    if(isAdminplaced=='true'):
+        employee=User.objects.filter(username=employeename).values('id')
+        employeeid=employee[0]['id']
+        order_items = orders.objects.filter(username=employeeid,incart=True,isplacedbyadmin=True).select_related('receipeid').values(
+                                    'receipeid__itemName','receipeid__price','receipeid__receipe','receipeid__image',
+                                    'itemquantity','receipeid','orderid','receipeid__id')
+    
+    else:
+        order_items = orders.objects.filter(username=userid,incart=True,isplacedbyadmin=False).select_related('receipeid').values(
+                                    'receipeid__itemName','receipeid__price','receipeid__receipe','receipeid__image',
+                                    'itemquantity','receipeid','orderid','receipeid__id')
+
     ordtotal=0
     total=0
     for ord in order_items:
@@ -58,29 +73,58 @@ def itemcart(request):
 
 def checkout(request):
     if request.method=='POST':
-     username=request.POST.get('username')
+     username=request.user
      data=request.POST
      total=data.get('total')
      receipe=json.loads(data.get('receipe'))
      ordersdata=json.loads(data.get('orders'))
+     isAdminplaced=request.POST.get('isAdminplaced')
+     employeename=request.POST.get('employeename')
     
-     for ord in ordersdata:
+    if(isAdminplaced=='true'):
+        ordercheckout(employeename,total,receipe,ordersdata,True)
+        updatetransactions(username,total)
+        employeehistory(username,receipe)
+        updateitemsquantity(receipe)
+    else:
+        ordercheckout(username,total,receipe,ordersdata,False)
+        updatetransactions(username,total)
+        employeehistory(username,receipe)
+        updateitemsquantity(receipe)
+    return JsonResponse({'message':'order placed'},safe=False)
+   
+
+#helper method for checkout to save the records
+def ordercheckout(username,total,receipe,ordersdata,isAdminplaced):
+      for ord in ordersdata:
          orderid=ord.get('orderid')
          qty=ord.get('itemquantity')
-         orders.objects.filter(orderid=orderid).update(itemquantity=qty,incart=False,paymentstatus='completed')
+         orders.objects.filter(orderid=orderid ,isplacedbyadmin=isAdminplaced).update(itemquantity=qty,incart=False,paymentstatus='completed')
+     
+   
+ #helper function to update item quantity 
 
+#helper method for checkout to update quantity
+def updateitemsquantity(receipe):
+    totalquantities=0
+    for it in receipe:
+        totalquantities=int(it.get('quantity'))-totalquantities
+       # Item.objects.filter(id=it.rec.get('receipeid')).update(totalquantities=totalquantities)
+        totalquantities=0
     
 
-     trans=Transactions.objects.create(
+#helper function for employee transactios  entry in transations table
+def updatetransactions(username,total):
+    trans=Transactions.objects.create(
         username=User.objects.get(username=username),
         amount=total,
         transactype='debit'
         )
-     trans.save()
-   
+    trans.save()
     
-
-    for rec in receipe:
+#helper function for employee to record hitory of employee
+def employeehistory(username,receipe):
+     for rec in receipe:
                
         emph= EmployeeOrderHistory.objects.create(
             username=User.objects.get(username=username),
@@ -89,13 +133,7 @@ def checkout(request):
             price=rec.get('price')
         )
         emph.save()
-    totalquantities=0
-    for it in receipe:
-        totalquantities=int(it.get('quantity'))-totalquantities
-       # Item.objects.filter(id=it.rec.get('receipeid')).update(totalquantities=totalquantities)
-        totalquantities=0
-
-    return redirect('/')
+   
 
 
 #add user selected food receipe
@@ -112,7 +150,7 @@ def addordersdetail(request):
                 orderplaced(receipeid,qty,employeename,True)
                 cartcount=carcount(employeename,True)
                 return JsonResponse({'message':'order added','cartcount':cartcount},safe=False)
-        elif(isAdminplaced=='false' or isAdminplaced==''):
+        else:
             orderplaced(receipeid,qty,currentuser,False)
             cartcount=carcount(currentuser,False)
             return JsonResponse({'message':'order added','cartcount':cartcount},safe=False)
