@@ -16,6 +16,7 @@ class Employee(models.Model):
     rating=models.FloatField(default=5)
     coupon=models.CharField(max_length=50,null=True,blank=True,default='')
     discount=models.FloatField(default=0.0)
+    isguestlogin=models.BooleanField(default=False)
     
 
 class Item(models.Model):

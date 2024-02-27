@@ -69,6 +69,26 @@ def logoutusr(request):
     logout(request)
     return redirect('/')
  
+def guest_Login_page(request):
+    if request.method=="POST":
+        username=request.POST.get('username')
+        userid=User.objects.filter(username=username).values('id')
+        userid=userid[0]['id']
+        Employee.objects.filter(username=userid).update(isguestlogin=True)
+        
+    return JsonResponse({'message':'ok'},safe=False)
+
+def guest_Logout_page(request):
+    if request.method=="POST":
+        username=request.POST.get('username')
+        userid=User.objects.filter(username=username).values('id')
+        userid=userid[0]['id']
+        Employee.objects.filter(username=userid).update(isguestlogin=False)
+        
+    return JsonResponse({'message':'ok'},safe=False)
+    
+
+
 def updateUserDetailsEmployee(request):
     queryset=User.objects.get(id=id)
     context={'user':queryset}

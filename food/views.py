@@ -6,11 +6,18 @@ from django.http import HttpResponseBadRequest,JsonResponse
 # Create your views here.
 
 def fooditems(request):
-    isAdminplaced=request.COOKIES.get('isAdminplaced')
-    employeename=request.COOKIES.get('employeename')
+    #isAdminplaced=request.COOKIES.get('isAdminplaced')
+    #employeename=request.COOKIES.get('employeename')
+    userid=request.user.id
     items=Item.objects.all()
     cartcount=0
-    orderscount=orders.objects.filter(username=request.user.id,paymentstatus='initiated').values('itemquantity')
+
+    user=Employee.objects.filter(isguestlogin=True).values('username')
+   
+    if user.exists():
+         userid=user[0]['username']
+
+    orderscount=orders.objects.filter(username=userid,paymentstatus='initiated').values('itemquantity')
     for ordercnt in  orderscount:
            cartcount= ordercnt['itemquantity'] + cartcount  
 
@@ -21,9 +28,14 @@ def fooditems(request):
 
 def foodmenu(request):
      items=Item.objects.all()
-     
      cartcount=0
-     orderscount=orders.objects.filter(username=request.user.id,paymentstatus='initiated').values('itemquantity')
+     userid=request.user.id
+     user=Employee.objects.filter(isguestlogin=True).values('username')
+   
+     if user.exists():
+         userid=user[0]['username']
+
+     orderscount=orders.objects.filter(username=userid,paymentstatus='initiated').values('itemquantity')
      for ordercnt in  orderscount:
            cartcount= ordercnt['itemquantity'] + cartcount  
 
@@ -40,24 +52,25 @@ def getitemdetails(request):
     
     return render(request,"clickedfooditem.html",context)
 
-def ordersuccess(request):
-    return render(request,"orderplaced.html")
 
 def itemcart(request):
     userid=request.user.id
-    isAdminplaced=request.POST.get('isAdminplaced')
-    employeename=request.POST.get('employeename')
-    
+    #isAdminplaced=request.POST.get('isAdminplaced')
+    #employeename=request.POST.get('employeename')
+    user=Employee.objects.filter(isguestlogin=True).values('username')
+    if user.exists():
+          userid=user[0]['username']
+          username=User.objects.filter(id=userid)
 
-    if(isAdminplaced=='true'):
+    '''if(isAdminplaced=='true'):
         employee=User.objects.filter(username=employeename).values('id')
         employeeid=employee[0]['id']
         order_items = orders.objects.filter(username=employeeid,incart=True,isplacedbyadmin=True).select_related('receipeid').values(
                                     'receipeid__itemName','receipeid__price','receipeid__receipe','receipeid__image',
                                     'itemquantity','receipeid','orderid','receipeid__id')
+    '''
     
-    else:
-        order_items = orders.objects.filter(username=userid,incart=True,isplacedbyadmin=False).select_related('receipeid').values(
+    order_items = orders.objects.filter(username=userid,incart=True).select_related('receipeid').values(
                                     'receipeid__itemName','receipeid__price','receipeid__receipe','receipeid__image',
                                     'itemquantity','receipeid','orderid','receipeid__id')
 
@@ -78,28 +91,33 @@ def checkout(request):
      total=data.get('total')
      receipe=json.loads(data.get('receipe'))
      ordersdata=json.loads(data.get('orders'))
-     isAdminplaced=request.POST.get('isAdminplaced')
-     employeename=request.POST.get('employeename')
+     user=Employee.objects.filter(isguestlogin=True).values('username')
+     if user.exists():
+          userid=user[0]['username']
+          username=User.objects.filter(id=userid)
+     #isAdminplaced=request.POST.get('isAdminplaced')
+     #employeename=request.POST.get('employeename')
     
-    if(isAdminplaced=='true'):
+    ''''if(isAdminplaced=='true'):
         ordercheckout(employeename,total,receipe,ordersdata,True)
         updatetransactions(username,total)
         employeehistory(username,receipe)
         updateitemsquantity(receipe)
-    else:
-        ordercheckout(username,total,receipe,ordersdata,False)
-        updatetransactions(username,total)
-        employeehistory(username,receipe)
-        updateitemsquantity(receipe)
+        '''
+ 
+    ordercheckout(username,total,receipe,ordersdata)
+    updatetransactions(username,total)
+    employeehistory(username,receipe)
+    updateitemsquantity(receipe)
     return JsonResponse({'message':'order placed'},safe=False)
    
 
 #helper method for checkout to save the records
-def ordercheckout(username,total,receipe,ordersdata,isAdminplaced):
+def ordercheckout(ordersdata):
       for ord in ordersdata:
          orderid=ord.get('orderid')
          qty=ord.get('itemquantity')
-         orders.objects.filter(orderid=orderid ,isplacedbyadmin=isAdminplaced).update(itemquantity=qty,incart=False,paymentstatus='completed')
+         orders.objects.filter(orderid=orderid).update(itemquantity=qty,incart=False,paymentstatus='completed')
      
    
  #helper function to update item quantity 
@@ -140,42 +158,37 @@ def employeehistory(username,receipe):
 def addordersdetail(request):
     
     if request.method=="POST":
+        username=request.user
         receipeid=request.POST.get('id')
         qty=request.POST.get('itemquantity')
         #cartcount=request.POST.get('cartcount')
-        isAdminplaced=request.POST.get('isAdminplaced')
-        employeename=request.POST.get('employeename')
-        currentuser=request.user
-        if (isAdminplaced=='true'):
+        user=Employee.objects.filter(isguestlogin=True).values('username')
+        if user.exists():
+           userid=user[0]['username']
+           username=User.objects.filter(id=userid)
+        #isAdminplaced=request.POST.get('isAdminplaced')
+        #employeename=request.POST.get('employeename')
+        
+        '''if (isAdminplaced=='true'):
                 orderplaced(receipeid,qty,employeename,True)
                 cartcount=carcount(employeename,True)
                 return JsonResponse({'message':'order added','cartcount':cartcount},safe=False)
-        else:
-            orderplaced(receipeid,qty,currentuser,False)
-            cartcount=carcount(currentuser,False)
-            return JsonResponse({'message':'order added','cartcount':cartcount},safe=False)
+        '''
+        
+        orderplaced(receipeid,qty,username)
+        cartcount=carcount(username)
+        return JsonResponse({'message':'order added','cartcount':cartcount},safe=False)
 
 
 def deletecartitem(request):
    
    orderid=request.GET.get('orderid')
    currentuser=request.user
-   isAdminplaced=request.POST.get('isAdminplaced')
-   employeename=request.POST.get('employeename')
    #orders.objects.filter(orderid=orderid).delete()
-   if (isAdminplaced=='true'):
-       orders.objects.filter(orderid=orderid,isplacedbyadmin=True).delete()
+   orders.objects.filter(orderid=orderid).delete()
        
-       return JsonResponse({'message':'item deleted'},safe=False)
-        
-   elif(isAdminplaced=='false' or isAdminplaced==''):
-        orders.objects.filter(orderid=orderid,isplacedbyadmin=False).delete()
-        
-        return JsonResponse({'message':'item deleted'},safe=False)
-   elif(isAdminplaced==None):
-        orders.objects.filter(orderid=orderid,isplacedbyadmin=False).delete()
-        
-        return JsonResponse({'message':'item deleted'},safe=False)
+   return JsonResponse({'message':'item deleted'},safe=False)
+    
   
 
 # add receipe details inserted by admin
@@ -214,7 +227,7 @@ def updatereceipe(request):
 
 
 #helper function to saving the the orders
-def orderplaced(receipeid,qty,username,orderbyadmin):
+def orderplaced(receipeid,qty,username):
         username=User.objects.filter(username=username).values('id')
         userid=username[0]['id']
         username=User.objects.get(id=userid)
@@ -225,25 +238,25 @@ def orderplaced(receipeid,qty,username,orderbyadmin):
             itemquantity=qty,
             incart=True,
             paymentstatus='initiated',
-            isplacedbyadmin=orderbyadmin
+            
         )
         order.save()
 
 #helper function to get the cartcount
-def carcount(username,orderbyadmin):
+def carcount(username):
      cartcount=0
      username=User.objects.filter(username=username).values('id')
      userid=username[0]['id']
-     orderscount=orders.objects.filter(username=userid,paymentstatus='initiated',isplacedbyadmin=orderbyadmin).values('itemquantity')
+     orderscount=orders.objects.filter(username=userid,paymentstatus='initiated').values('itemquantity')
      for ordercnt in  orderscount:
            cartcount= ordercnt['itemquantity'] + cartcount
      return cartcount
 
  #helper function to get the details of orders in cart   
-def getitemsincart(username,orderbyadmin):
+def getitemsincart(username):
      username=User.objects.filter(username=username).values('id')
      userid=username[0]['id']
-     order_items = orders.objects.filter(username=userid,isplacedbyadmin=orderbyadmin,paymentstatus='initiated').select_related('receipeid').values(
+     order_items = orders.objects.filter(username=userid,paymentstatus='initiated').select_related('receipeid').values(
                                 'receipeid__itemName','receipeid__price','receipeid__receipe','receipeid__image',
                                 'itemquantity','receipeid')
      return order_items

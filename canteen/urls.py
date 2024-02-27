@@ -43,7 +43,8 @@ urlpatterns = [
         path('checkout/', checkout,name='checkout'),
         path('assignroles/', assignroles,name='assignroles'),
         path('removeroles/', removeroles,name='removeroles'),
-        path('ordersuccess/', ordersuccess,name='ordersuccess'),
+        path('guestLogin/', guest_Login_page,name='guestLogin'),
+        path('guestLogout/', guest_Logout_page,name='guestLogout'),
         path('admin/', admin.site.urls),
 ]
 

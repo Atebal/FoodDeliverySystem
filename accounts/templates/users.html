@@ -45,7 +45,11 @@
                                             <th>Email</th>
                                             <th>Balance</th>
                                             <th>PurchaseItems</th>
-                                            <th>Actions</th>
+                                            <th>Edit</th>
+                                            <th>Delete</th>
+                                            <th>Login</th>
+                                            <th>Logout</th>
+                                            
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -56,12 +60,12 @@
                                             <td>{{usr.employee__last_name}}</td>
                                             <td>{{usr.employee__email}}</td>
                                             <td>{{usr.payment__balance}}</td>
-                                            <td onclick=purchaseitem()><a href="#">Items</a></td>
-                                            <td><button type="button" class="btn btn-primary"  onclick=getuserdetails()><i
-                                                        class="bi bi-pencil"></i></button>
-                                                <button onclick=deleteuser()  class="btn btn-danger"><i
-                                                        class="bi bi-trash3"></i></button>
-                                            </td>
+                                            <td ><a href="#">Items</a></td>
+                                               <td><button type="button"  class="btn btn-outline-primary btn-sm edit-btn" ><i class="bi bi-pencil"></i></button></td>
+                                            <td><button  type="button"  class="btn btn-outline-danger btn-sm delete-btn" ><i class="bi bi-trash3"></i></button></td>
+                                           <td><button type="button"  class="btn btn-success btn-sm glogin-btn"><i class="bi bi-box-arrow-in-right"></i></button></td>
+                                           <td> <button  type="button" class="btn btn-outline-danger btn-sm glogout-btn"><i class="bi bi-box-arrow-in-left"></i></button></td>
+                                            
                                         </tr>
                                         {% endfor %}
                                     </tbody>
@@ -114,7 +118,7 @@
         $('#editusermodal').modal('hide');
         });
 
-        function purchaseitem()
+    function purchaseitem()
         {
                        
             var table = $('#bootstrap-data-table').DataTable();
@@ -132,16 +136,69 @@
 }
 
         
+    
+     var table = $('#bootstrap-data-table').DataTable();          
 
-        function deleteuser() {
-                var table = $('#bootstrap-data-table').DataTable();
-                var csrfToken = '{{ csrf_token }}'; // Obtain CSRF token from Django template
+     $('#bootstrap-data-table tbody').on('click', 'td', function () {
+         
+                            debugger;
+            var cellIndex = table.cell(this).index();
+            var cellData = table.cell(this).data();
+            var rowIndex = table.row($(this).closest('tr')).index();
+            var rowData = table.row(rowIndex).data();
+            username=rowData[0]
+           
+                   if(cellIndex.column==6){
+                    getuserdetails(username);
+                   }
+
+                   if(cellIndex.column==7){
+                    deleteuser(username);
+                    }
+
+                   if(cellIndex.column==8){
+                    lgusr(username);
+                    }
+                
+                    if(cellIndex.column==9){
+                        lgotusr(username);
+                    }
+     });   
+
+               
+
+
+                
+function getuserdetails(username) {
+        
+                // Obtain CSRF token from Django template
                 var username;
+                $.ajax({
+                    type: 'GET',
+                    url: '/edituser/', // URL to send the request to
+                    data: {
+                        'username':username
+                    },
+                    success: function (response) {
+                                 debugger; 
+                                 $('#divpopedit').html(response)
+                                 $('#editusermodal').modal('show');            
 
-                $('#bootstrap-data-table tbody').on('click', 'tr', function (e) {
-                    debugger;
-                    e.preventDefault();
-                    username = table.row(this).data()[0]; // Assuming username is the first column
+            },
+                    
+                    error: function (xhr, status, error) {
+                        // Handle error response
+                        console.error(xhr.responseText);
+                    }
+                });
+            
+        }
+    
+function deleteuser(username) {
+                        
+                var csrfToken = '{{ csrf_token }}'; // Obtain CSRF token from Django template
+                
+
                     $.ajax({
                         type: 'POST',
                         url: '/deleteuser/',
@@ -166,46 +223,68 @@
                             console.error(xhr.responseText);
                         }
                     });
-                });
+                
             }
 
-
-
+    function lgusr(username) {
         
+            debugger;
+               var csrfToken = '{{ csrf_token }}'; // Obtain CSRF token from Django template
+                
 
-        function getuserdetails() {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/guestLogin/',
+                        data: {
+                            'username': username,
+                            'csrfmiddlewaretoken': csrfToken
+                        },
+                        success: function (response) {
+                                    $('#hcart')[0].innerHTML="Welcome " + username;
+                                    $('#pcart')[0].innerHTML="Guest Logged in Successfully!!";
+                                    $('#statusSuccessModal').modal('show');
+                        },
+                        error: function (xhr, status, error) {
+                            console.error(xhr.responseText);
+                        }
+                    });
+                
+            }
+    
+    
+  function lgotusr(username) {
+    debugger;
+                    var csrfToken = '{{ csrf_token }}'; // Obtain CSRF token from Django template
+                               
+                    $.ajax({
+                        type: 'POST',
+                        url: '/guestLogout/',
+                        data: {
+                            'username': username,
+                            'csrfmiddlewaretoken': csrfToken
+                        },
+                        success: function (response) {
+                            debugger;
+                                    $('#hcart')[0].innerHTML="bye  " + username;
+                                    $('#pcart')[0].innerHTML="Guest Logged out Successfully!!";
+                                    $('#statusSuccessModal').modal('show');
+                        },
+                        error: function (xhr, status, error) {
+                            console.error(xhr.responseText);
+                        }
+                    });
+               
+            }
+        
+$('#bootstrap-data-table').on('click', 'td.glogin-btn', function (e) {
+                debugger;
+    // your code to do something
+});
 
-            var table = $('#bootstrap-data-table').DataTable();
-                var csrfToken = '{{ csrf_token }}'; // Obtain CSRF token from Django template
-                var username;
-
-                $('#bootstrap-data-table tbody').on('click', 'tr', function (e) {
-                    debugger;
-                    e.preventDefault();
-                    username = table.row(this).data()[0];
-
-                $.ajax({
-                    type: 'GET',
-                    url: '/edituser/', // URL to send the request to
-                    data: {
-                        'username':username
-                    },
-                    success: function (response) {
-                                 debugger; 
-                                 $('#divpopedit').html(response)
-                                 $('#editusermodal').modal('show');            
-
-            },
-                    
-                    error: function (xhr, status, error) {
-                        // Handle error response
-                        console.error(xhr.responseText);
-                    }
-                });
-            });
-        }
-
-
+$('#bootstrap-data-table').on('click', 'td.glogin-btn', function (e) {
+    debugger;
+    // your code to do something
+});
     
 
 
