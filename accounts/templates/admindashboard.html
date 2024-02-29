@@ -17,9 +17,21 @@
     <title>Canteen</title>
     <link rel="icon" sizes="192x192"
         href="{%static 'Images/classytitle.jpeg' %}">
+<style>
 
+* {
+  margin: 0;
+  padding: 0;
+}
+#chart-container {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+}
+</style>
             
     <link rel="stylesheet" href="{% static 'css/rmessagestyle.css' %}" type="text/css" />  
+   
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.0/normalize.min.css">
     <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css">-->
@@ -59,8 +71,8 @@
                        
                     </li>
                     <li class="menu-item-has-children dropdown">
-                        <a onclick=foodmenu() class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-                            aria-expanded="false"> <i class="menu-icon fa fa-table"></i>Menu</a>
+                        <a onclick="getroles()" class= "dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false"> <i class="menu-icon fa fa-table"></i> User Roles</a>
                     </li>
                     <li class="menu-item-has-children dropdown">
                         <a onclick=payment() class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
@@ -71,12 +83,12 @@
                     <li class="menu-title">Items Management</li><!-- /.menu-title -->
 
                     <li class="menu-item-has-children dropdown">
-                        <a onclick=getroles() class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-                            aria-expanded="false"> <i class="menu-icon fa fa-tasks"></i>User Roles</a>
+                        <a onclick=foodmenu() class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false"> <i class="menu-icon fa fa-tasks"></i> Menu</a>
                        
                     </li>
                     <li>
-                        <a href="widgets.html"> <i class="menu-icon ti-email"></i>whats New ! </a>
+                        <a href="widgets.html"> <i class="menu-icon ti-email"></i>Update Receipe </a>
                     </li>
 
                 </ul>
@@ -90,7 +102,7 @@
         <header id="header" class="header">
             <div class="top-left">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="/"><img src="images/logo.png" alt="Logo"></a>
+                    <a class="navbar-brand" href="/"><img style="height:59.98px;width:53px" src="{%static 'Images/canteen.svg' %}" alt="Logo"></a>
                     <a class="navbar-brand hidden" href="./"><img src="images/logo2.png" alt="Logo"></a>
                     <a id="menuToggle" class="menutoggle"><i class="fa fa-bars"></i></a>
                 </div>
@@ -112,7 +124,7 @@
 
                     <div class="user-area dropdown float-right">
                         <a href="#" class="dropdown-toggle active" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{request.user}}
-                            <img class="user-avatar rounded-circle" src="images/admin.jpg">
+                            <img class="user-avatar rounded-circle" src="{% static 'images/canteen.svg' %}">
                         </a>
 
                         <div class="user-menu dropdown-menu">
@@ -145,7 +157,7 @@
                                     </div>
                                     <div class="stat-content">
                                         <div class="text-left dib">
-                                            <div class="stat-text">$<span class="count">23569</span></div>
+                                            <div class="stat-text">$<span id="srev"  class="count">12345</span></div>
                                             <div class="stat-heading">Revenue</div>
                                         </div>
                                     </div>
@@ -210,7 +222,10 @@
                 </div>
                 <!-- /Widgets -->
                 <!--  Traffic  -->
-               
+                <div id="chart-container">
+
+                </div>
+                              
                 
                 <!-- Orders -->
                 <div id="divpages"></div>
@@ -261,6 +276,7 @@
     <script src="{% static 'js/buttons.print.min.js' %}"></script>
     <script src="{% static 'js/buttons.colVis.min.js' %}"></script>
     <script src="{% static 'js/datatables-init.js' %}"></script>
+    <script src="https://fastly.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
     
 
       
@@ -268,6 +284,160 @@
 
     <!--Local Stuff-->
     <script>
+
+$(document).ready(function(){
+    
+    startingindex="{{salesdate}}".indexOf("[")
+    endingindex="{{salesdate}}".indexOf("]")
+sales="{{salesdate}}".substr(startingindex+1,endingindex-1).split(",")
+salesdates=sales.map(function(sale) 
+        {
+            return $.trim(sale.replace(/&#x27;/g, ''));
+        });
+
+
+startingindex="{{salesrevenue}}".indexOf("[")
+endingindex="{{salesrevenue}}".indexOf("]")
+revenues="{{salesrevenue}}".substr(startingindex+1,endingindex-1).split(",")
+
+revenue=revenues.map(function(s){
+    
+   return Number($.trim(s))
+})
+
+srev=revenue.reduce(function(acc,s){
+        return s+acc;
+},0);
+
+$('#srev')[0].innerText=srev;
+
+loadmap(salesdates,revenue);
+function loadmap(salesdates,revenue)
+{
+    debugger;
+var dom = document.getElementById('chart-container');
+var myChart = echarts.init(dom, null, {
+  renderer: 'canvas',
+  useDirtyRect: false
+});
+var app = {};
+var option;
+ 
+myChart.setOption(
+    (option = {
+      title: {
+        text: 'Sales Revenue',
+        left: '1%'
+      },
+      tooltip: {
+        trigger: 'axis'
+      },
+      grid: {
+        left: '5%',
+        right: '15%',
+        bottom: '10%'
+      },
+      xAxis: {
+        data: salesdates
+      },
+      yAxis: {},
+      toolbox: {
+        right: 10,
+        feature: {
+          dataZoom: {
+            yAxisIndex: 'none'
+          },
+          restore: {},
+          saveAsImage: {}
+        }
+      },
+      dataZoom: [
+        {
+          startValue: '2014-06-01'
+        },
+        {
+          type: 'inside'
+        }
+      ],
+      visualMap: {
+        top: 50,
+        right: 10,
+        pieces: [
+          {
+            gt: 0,
+            lte: 2150,
+            color: '#93CE07'
+          },
+          {
+            gt: 2150,
+            lte: 2500,
+            color: '#FBDB0F'
+          },
+          {
+            gt: 2500,
+            lte: 10750,
+            color: '#FC7D02'
+          },
+          {
+            gt: 10750,
+            lte: 20000,
+            color: '#FD0100'
+          },
+          {
+            gt: 20000,
+            lte: 30000,
+            color: '#AA069F'
+          },
+          {
+            gt: 40000,
+            color: '#AC3B2A'
+          }
+        ],
+        outOfRange: {
+          color: '#999'
+        }
+      },
+      series: {
+        name: 'Sales Revenue',
+        type: 'line',
+        data: revenue,
+        markLine: {
+          silent: true,
+          lineStyle: {
+            color: '#333'
+          },
+          data: [
+            {
+              yAxis: 50000
+            },
+            {
+              yAxis: 20000
+            },
+            {
+              yAxis: 10000
+            },
+            {
+              yAxis: 2000
+            },
+            {
+              yAxis: 1000
+            }
+          ]
+        }
+      }
+    })
+  )
+//});
+
+if (option && typeof option === 'object') {
+  myChart.setOption(option);
+}
+
+window.addEventListener('resize', myChart.resize);
+}
+
+
+});
 
 
     function displayuser()

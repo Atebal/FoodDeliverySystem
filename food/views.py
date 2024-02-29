@@ -87,6 +87,8 @@ def itemcart(request):
 def checkout(request):
     if request.method=='POST':
      username=request.user
+     currentuser=User.objects.filter(username=username).values('id')
+     userid=currentuser[0]['id']
      data=request.POST
      total=data.get('total')
      receipe=json.loads(data.get('receipe'))
@@ -94,7 +96,7 @@ def checkout(request):
      user=Employee.objects.filter(isguestlogin=True).values('username')
      if user.exists():
           userid=user[0]['username']
-          username=User.objects.filter(id=userid)
+          #username=User.objects.filter(id=userid)
      #isAdminplaced=request.POST.get('isAdminplaced')
      #employeename=request.POST.get('employeename')
     
@@ -105,9 +107,9 @@ def checkout(request):
         updateitemsquantity(receipe)
         '''
  
-    ordercheckout(username,total,receipe,ordersdata)
-    updatetransactions(username,total)
-    employeehistory(username,receipe)
+    ordercheckout(ordersdata)
+    updatetransactions(userid,total)
+    employeehistory(userid,receipe)
     updateitemsquantity(receipe)
     return JsonResponse({'message':'order placed'},safe=False)
    
@@ -134,7 +136,7 @@ def updateitemsquantity(receipe):
 #helper function for employee transactios  entry in transations table
 def updatetransactions(username,total):
     trans=Transactions.objects.create(
-        username=User.objects.get(username=username),
+        username=User.objects.get(id=username),
         amount=total,
         transactype='debit'
         )
@@ -145,7 +147,7 @@ def employeehistory(username,receipe):
      for rec in receipe:
                
         emph= EmployeeOrderHistory.objects.create(
-            username=User.objects.get(username=username),
+            username=User.objects.get(id=username),
             itemname=Item.objects.get(id=rec.get('receipeid')),
             Quantity=rec.get('quantity'),
             price=rec.get('price')
@@ -159,10 +161,13 @@ def addordersdetail(request):
     
     if request.method=="POST":
         username=request.user
+        currentuser=User.objects.filter(username=username).values('id')
+        userid=currentuser[0]['id']
         receipeid=request.POST.get('id')
         qty=request.POST.get('itemquantity')
         #cartcount=request.POST.get('cartcount')
         user=Employee.objects.filter(isguestlogin=True).values('username')
+        
         if user.exists():
            userid=user[0]['username']
            username=User.objects.filter(id=userid)
@@ -175,8 +180,8 @@ def addordersdetail(request):
                 return JsonResponse({'message':'order added','cartcount':cartcount},safe=False)
         '''
         
-        orderplaced(receipeid,qty,username)
-        cartcount=carcount(username)
+        orderplaced(receipeid,qty,userid)
+        cartcount=carcount(userid)
         return JsonResponse({'message':'order added','cartcount':cartcount},safe=False)
 
 
@@ -227,13 +232,13 @@ def updatereceipe(request):
 
 
 #helper function to saving the the orders
-def orderplaced(receipeid,qty,username):
-        username=User.objects.filter(username=username).values('id')
-        userid=username[0]['id']
-        username=User.objects.get(id=userid)
+def orderplaced(receipeid,qty,userid):
+        
+       
+        uname=User.objects.get(id=userid)
         receipe=Item.objects.get(id=receipeid)
         order=orders.objects.create(
-            username=username,
+            username=uname,
             receipeid=receipe,
             itemquantity=qty,
             incart=True,
@@ -243,10 +248,9 @@ def orderplaced(receipeid,qty,username):
         order.save()
 
 #helper function to get the cartcount
-def carcount(username):
+def carcount(userid):
      cartcount=0
-     username=User.objects.filter(username=username).values('id')
-     userid=username[0]['id']
+     
      orderscount=orders.objects.filter(username=userid,paymentstatus='initiated').values('itemquantity')
      for ordercnt in  orderscount:
            cartcount= ordercnt['itemquantity'] + cartcount

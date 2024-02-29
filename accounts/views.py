@@ -4,8 +4,10 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import User,Permission
 from django.contrib.auth.decorators import login_required
 from .models import *
-from django.contrib import messages
 from django.http import JsonResponse
+from django.db.models import F,Sum
+from django.db.models.functions import TruncDate
+
 
 # Create your views here.
 def login_page(request):
@@ -75,8 +77,12 @@ def guest_Login_page(request):
         userid=User.objects.filter(username=username).values('id')
         userid=userid[0]['id']
         Employee.objects.filter(username=userid).update(isguestlogin=True)
-        
-    return JsonResponse({'message':'ok'},safe=False)
+        queryset=User.objects.all().values(
+            'username', 'employee__firstname','employee__last_name','employee__email','employee__mobile','addresstable__state','payment__balance','employee__isguestlogin'
+            )
+    context={'users':queryset}
+
+    return render(request,'users.html',context)
 
 def guest_Logout_page(request):
     if request.method=="POST":
@@ -84,11 +90,13 @@ def guest_Logout_page(request):
         userid=User.objects.filter(username=username).values('id')
         userid=userid[0]['id']
         Employee.objects.filter(username=userid).update(isguestlogin=False)
-        
-    return JsonResponse({'message':'ok'},safe=False)
-    
+        queryset=User.objects.all().values(
+            'username', 'employee__firstname','employee__last_name','employee__email','employee__mobile','addresstable__state','payment__balance','employee__isguestlogin'
+            )
+    context={'users':queryset}
 
-
+    return render(request,'users.html',context)
+ 
 def updateUserDetailsEmployee(request):
     queryset=User.objects.get(id=id)
     context={'user':queryset}
@@ -124,16 +132,26 @@ def address(request,id):
 
 
 def adminpanel(request):
-    if request.method=="POST":
-        pass
+    revenue_by_date = EmployeeOrderHistory.objects.annotate(purchasedate=TruncDate('transactiondate')).values('purchasedate').annotate(revenue=Sum(F('price') * F('Quantity'))).order_by('purchasedate')
+    ''' revenue = [
+        {'purchasedate': item['purchasedate'].strftime('%Y-%m-%d'), 'revenue': item['revenue']}
+        for item in revenue_by_date
+    ]'''
+    salesrevenue=[]
+    salesdate=[]
 
-    return render(request,"admindashboard.html")
+    for r in revenue_by_date:
+        salesdate.append(r['purchasedate'].strftime('%Y-%m-%d'))
+        salesrevenue.append(r['revenue'])
+
+    context={'salesdate':salesdate,'salesrevenue':salesrevenue}
+    return render(request,"admindashboard.html",context)
 
 
 def displayallusers(request):
 
     queryset=User.objects.all().values(
-            'username', 'employee__firstname','employee__last_name','employee__email','employee__mobile','addresstable__state','payment__balance'
+            'username', 'employee__firstname','employee__last_name','employee__email','employee__mobile','addresstable__state','payment__balance','employee__isguestlogin'
             )
     context={'users':queryset}
 

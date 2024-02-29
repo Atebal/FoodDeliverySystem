@@ -47,9 +47,8 @@
                                             <th>PurchaseItems</th>
                                             <th>Edit</th>
                                             <th>Delete</th>
-                                            <th>Login</th>
-                                            <th>Logout</th>
-                                            
+                                            <th>Status</th>
+                                                                                        
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -61,11 +60,13 @@
                                             <td>{{usr.employee__email}}</td>
                                             <td>{{usr.payment__balance}}</td>
                                             <td ><a href="#">Items</a></td>
-                                               <td><button type="button"  class="btn btn-outline-primary btn-sm edit-btn" ><i class="bi bi-pencil"></i></button></td>
+                                            <td><button type="button"  class="btn btn-outline-primary btn-sm edit-btn" ><i class="bi bi-pencil"></i></button></td>
                                             <td><button  type="button"  class="btn btn-outline-danger btn-sm delete-btn" ><i class="bi bi-trash3"></i></button></td>
-                                           <td><button type="button"  class="btn btn-success btn-sm glogin-btn"><i class="bi bi-box-arrow-in-right"></i></button></td>
-                                           <td> <button  type="button" class="btn btn-outline-danger btn-sm glogout-btn"><i class="bi bi-box-arrow-in-left"></i></button></td>
-                                            
+                                            {% if usr.employee__isguestlogin  %}
+                                            <td class="glogout-btn"> <button  type="button" class="btn btn-outline-danger btn-sm"><i class="bi bi-box-arrow-in-left"></i></button></td>
+                                           {% else %}
+                                           <td class="glogin-btn"><button type="button"  class="btn btn-success btn-sm"><i class="bi bi-box-arrow-in-right"></i></button></td>
+                                            {% endif%}
                                         </tr>
                                         {% endfor %}
                                     </tbody>
@@ -140,7 +141,8 @@
      var table = $('#bootstrap-data-table').DataTable();          
 
      $('#bootstrap-data-table tbody').on('click', 'td', function () {
-         
+
+        var tdClass = $(this).attr('class');   
                             debugger;
             var cellIndex = table.cell(this).index();
             var cellData = table.cell(this).data();
@@ -157,12 +159,18 @@
                     }
 
                    if(cellIndex.column==8){
-                    lgusr(username);
+                    if(tdClass==="glogin-btn")
+                    {
+                        lgusr(username);
+                    }
+                    else if(tdClass==="glogout-btn"){
+                        lgotusr(username);
+
+                    }
+                   
                     }
                 
-                    if(cellIndex.column==9){
-                        lgotusr(username);
-                    }
+                    
      });   
 
                
@@ -240,6 +248,7 @@ function deleteuser(username) {
                             'csrfmiddlewaretoken': csrfToken
                         },
                         success: function (response) {
+                                   $('#divpages').html(response);
                                     $('#hcart')[0].innerHTML="Welcome " + username;
                                     $('#pcart')[0].innerHTML="Guest Logged in Successfully!!";
                                     $('#statusSuccessModal').modal('show');
@@ -264,7 +273,7 @@ function deleteuser(username) {
                             'csrfmiddlewaretoken': csrfToken
                         },
                         success: function (response) {
-                            debugger;
+                            $('#divpages').html(response);
                                     $('#hcart')[0].innerHTML="bye  " + username;
                                     $('#pcart')[0].innerHTML="Guest Logged out Successfully!!";
                                     $('#statusSuccessModal').modal('show');
@@ -276,16 +285,7 @@ function deleteuser(username) {
                
             }
         
-$('#bootstrap-data-table').on('click', 'td.glogin-btn', function (e) {
-                debugger;
-    // your code to do something
-});
-
-$('#bootstrap-data-table').on('click', 'td.glogin-btn', function (e) {
-    debugger;
-    // your code to do something
-});
-    
+   
 
 
     </script>
