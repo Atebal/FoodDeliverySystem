@@ -190,7 +190,7 @@ def displayallusers(request):
 @login_required
 def payment(request):
     if request.method=="POST":
-        username=request.POST.get('username')
+        username=request.user.username
         balance=request.POST.get('balance')
         user=User.objects.get(username=username)
         queryset=User.objects.filter(username=username).values(
