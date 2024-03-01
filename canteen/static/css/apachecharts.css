@@ -1,0 +1,22 @@
+
+
+
+* {
+  margin: 0;
+  padding: 0;
+}
+.chrtcontainer {
+  
+  display:flex;
+  flex-wrap: wrap;
+  flex-direction: row ;
+  
+}
+
+.charts{
+    position: relative;
+    height: 50vh;
+    width:100%;
+}
+
+

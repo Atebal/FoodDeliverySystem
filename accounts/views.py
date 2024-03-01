@@ -5,8 +5,10 @@ from django.contrib.auth.models import User,Permission
 from django.contrib.auth.decorators import login_required
 from .models import *
 from django.http import JsonResponse
-from django.db.models import F,Sum
+from django.db.models import F,Sum,Count
 from django.db.models.functions import TruncDate
+
+from .decorators import group_required
 
 
 # Create your views here.
@@ -71,6 +73,7 @@ def logoutusr(request):
     logout(request)
     return redirect('/')
  
+@login_required
 def guest_Login_page(request):
     if request.method=="POST":
         username=request.POST.get('username')
@@ -102,9 +105,16 @@ def updateUserDetailsEmployee(request):
     context={'user':queryset}
     return redirect(request,"editemployee.html",context)
 
-def profile(request,id):
-   
-    queryset=User.objects.filter(id=id).values(
+def userdashboard(request):
+    
+    
+    return render(request,"Employeehome.html")
+    
+@login_required
+def profile(request):
+    
+    userid=request.user.id
+    queryset=User.objects.filter(id=userid).values(
             'username', 'employee__firstname','employee__last_name','employee__email','employee__mobile','addresstable__state','payment__balance'
             )
     context={'employee':queryset}
@@ -130,24 +140,44 @@ def address(request,id):
         return render(request,'profile.html',context)
     return render(request,"address.html")
 
-
+@group_required('CMSAdmin')
 def adminpanel(request):
-    revenue_by_date = EmployeeOrderHistory.objects.annotate(purchasedate=TruncDate('transactiondate')).values('purchasedate').annotate(revenue=Sum(F('price') * F('Quantity'))).order_by('purchasedate')
+    
+    revenue_by_date = EmployeeOrderHistory.objects.annotate(purchasedate=TruncDate('transactiondate')).values('username__username','itemname__itemName','purchasedate').annotate(revenue=Sum(F('price') * F('Quantity'))).order_by('purchasedate')
+    
+    #total users in user Table
+    usercount=User.objects.all().count()
+
+    #ordercount per user how many orders are placed by user
+    ordercountperuser=EmployeeOrderHistory.objects.annotate(purchasedate=TruncDate('transactiondate')).values('username__username','purchasedate').annotate(ordercount=Count('username'))
+
     ''' revenue = [
         {'purchasedate': item['purchasedate'].strftime('%Y-%m-%d'), 'revenue': item['revenue']}
         for item in revenue_by_date
     ]'''
     salesrevenue=[]
     salesdate=[]
+    usrs=[]
+    recepname=[]
+    ordercount=[]
+    orderuser=[]
 
     for r in revenue_by_date:
         salesdate.append(r['purchasedate'].strftime('%Y-%m-%d'))
         salesrevenue.append(r['revenue'])
+        usrs.append(r['username__username'])
+        recepname.append(r['itemname__itemName'])
+   
+    for ords in ordercountperuser:
+        ordercount.append(ords['ordercount'])
+        orderuser.append(ords['username__username'])
 
-    context={'salesdate':salesdate,'salesrevenue':salesrevenue}
+
+    context={'usrs':usrs,'salesdate':salesdate,'salesrevenue':salesrevenue,'recepname':recepname,
+             'usercount':usercount,'ordercount':ordercount,'orderuser':orderuser}
     return render(request,"admindashboard.html",context)
 
-
+@group_required('CMSAdmin')
 def displayallusers(request):
 
     queryset=User.objects.all().values(
@@ -157,6 +187,7 @@ def displayallusers(request):
 
     return render(request,'users.html',context)
 
+@login_required
 def payment(request):
     if request.method=="POST":
         username=request.POST.get('username')
@@ -184,6 +215,7 @@ def payment(request):
 
     return render(request,"payment.html")
 
+@group_required('CMSAdmin')
 def deleteuser(request):
     if request.method=='POST':
         username=request.POST.get('username')
@@ -201,6 +233,7 @@ def deleteuser(request):
     
     return redirect (request,"/adminpanel")
 
+@group_required('CMSAdmin')
 def editUseradmin(request):
     username=username=request.GET.get('username')
     queryset=User.objects.filter(username=username).values(
@@ -226,6 +259,7 @@ def editUseradmin(request):
     context={'users':queryset}
     return render (request,"edituser.html",context)
 
+@group_required('CMSAdmin')
 def assignroles(request):
     if request.method=='POST':
         username=request.POST.get('username')
@@ -243,6 +277,7 @@ def assignroles(request):
     context={'users':usersa}
     return render(request,"userroles.html",context)
 
+@group_required('CMSAdmin')
 def removeroles(request):
     if request.method=='POST':
         username=request.POST.get('username')
@@ -258,6 +293,15 @@ def removeroles(request):
        
     context={'users':usersa}
     return render(request,"userroles.html",context)
+
+def userorderHistory(request):
+    userid=request.user.id
+    queryset=EmployeeOrderHistory.objects.filter(username=userid).values(
+            'username__username', 'itemname__itemName','Quantity','price','transactiondate'
+            )
+    context={'orders':queryset}
+
+    return render(request,'userorderhistory.html',context)
 
 def addusertoroles(username,rolename):
     user = User.objects.get(username=username)
@@ -285,3 +329,4 @@ def getuserRoles():
         user_groups={'username':user,'group':group_names}
         usersa.append(user_groups)
     return usersa
+

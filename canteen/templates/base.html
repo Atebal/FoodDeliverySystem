@@ -2323,9 +2323,13 @@
                                             </svg>
                                             <span> {{request.user}} </span>
                                             <div class="forLogoutBox"> 
-                                               <div><a href="/profile/{{request.user.id}}/">Profile</a></div>
+                                               <div><a href="/userdashboard/">Profile</a></div>
+                                               <div ><a href="/userdashboard">Orders</a></div>
+                                               {% if request.user.username == 'admin' %}
+                                               <div ><a href="/adminpanel">Admin Panel</a></div>
+                                               {% endif %}
                                                <div ><a href="/logout">Logout</a></div>
-                                               <div ><a href="/adminpanel">settings</a></div>
+                                               
                                             </div>
                                         
                                    

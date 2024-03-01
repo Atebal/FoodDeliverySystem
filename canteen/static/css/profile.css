@@ -144,9 +144,9 @@ p {
 }
 
 .lgcs{    
+    top: 2px;
     position: relative;
-        left: 50px;
-        top: 10px;
+    left:-5%;
     }
 .usernme
     {

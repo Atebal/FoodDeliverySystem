@@ -2,6 +2,9 @@ from django.shortcuts import render,redirect
 from accounts.models import *
 import json
 from django.http import HttpResponseBadRequest,JsonResponse
+from django.contrib.auth.decorators import login_required
+from django.db.models import Q
+
 
 # Create your views here.
 
@@ -17,7 +20,8 @@ def fooditems(request):
     if user.exists():
          userid=user[0]['username']
 
-    orderscount=orders.objects.filter(username=userid,paymentstatus='initiated').values('itemquantity')
+    orderscount = orders.objects.filter(Q(username=userid) & Q(paymentstatus='initiated')).values('itemquantity')
+
     for ordercnt in  orderscount:
            cartcount= ordercnt['itemquantity'] + cartcount  
 
@@ -52,7 +56,7 @@ def getitemdetails(request):
     
     return render(request,"clickedfooditem.html",context)
 
-
+@login_required
 def itemcart(request):
     userid=request.user.id
     #isAdminplaced=request.POST.get('isAdminplaced')
@@ -84,6 +88,7 @@ def itemcart(request):
     
     return render(request,"itemcart.html",context)
 
+@login_required
 def checkout(request):
     if request.method=='POST':
      username=request.user
@@ -157,6 +162,7 @@ def employeehistory(username,receipe):
 
 
 #add user selected food receipe
+@login_required
 def addordersdetail(request):
     
     if request.method=="POST":
@@ -184,7 +190,7 @@ def addordersdetail(request):
         cartcount=carcount(userid)
         return JsonResponse({'message':'order added','cartcount':cartcount},safe=False)
 
-
+@login_required
 def deletecartitem(request):
    
    orderid=request.GET.get('orderid')
@@ -197,6 +203,7 @@ def deletecartitem(request):
   
 
 # add receipe details inserted by admin
+@login_required
 def addfooditem(request):
     if request.method=="POST":
         itemName=request.POST.get('itemName')
@@ -216,6 +223,7 @@ def addfooditem(request):
         return render(request,"addreceipe.html")
     return render(request,"addreceipe.html")
 
+@login_required
 def updatereceipe(request):
     if request.method=="POST":
         itemName=request.POST.get('itemName')
@@ -264,4 +272,5 @@ def getitemsincart(username):
                                 'receipeid__itemName','receipeid__price','receipeid__receipe','receipeid__image',
                                 'itemquantity','receipeid')
      return order_items
-     
+
+

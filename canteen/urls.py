@@ -23,7 +23,7 @@ from food.views import *
 from accounts.views import *
 urlpatterns = [
         path('', fooditems,name='fooditems'),
-        path('profile/<id>/', profile,name='profile'),
+        path('profile/', profile,name='profile'),
         path('login/', login_page,name='login_page'),
         path('register/', register,name='register'),
         path('logout/', logoutusr,name='logoutusr'),
@@ -45,6 +45,8 @@ urlpatterns = [
         path('removeroles/', removeroles,name='removeroles'),
         path('guestLogin/', guest_Login_page,name='guestLogin'),
         path('guestLogout/', guest_Logout_page,name='guestLogout'),
+        path('userdashboard/', userdashboard,name='userdashboard'),
+        path('orderhistory/', userorderHistory,name='orderhistory'),
         path('admin/', admin.site.urls),
 ]
 
