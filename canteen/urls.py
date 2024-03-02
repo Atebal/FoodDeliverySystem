@@ -47,6 +47,7 @@ urlpatterns = [
         path('guestLogout/', guest_Logout_page,name='guestLogout'),
         path('userdashboard/', userdashboard,name='userdashboard'),
         path('orderhistory/', userorderHistory,name='orderhistory'),
+        path('editemployee/', editUser,name='editemployee'),
         path('admin/', admin.site.urls),
 ]
 

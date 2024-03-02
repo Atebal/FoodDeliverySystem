@@ -137,7 +137,7 @@ def address(request,id):
             'username', 'employee__firstname','employee__last_name','employee__email','employee__mobile','addresstable__state','payment__balance'
             )
         context={'employee':queryset}
-        return render(request,'profile.html',context)
+        return render(request,'userprofile.html',context)
     return render(request,"address.html")
 
 @group_required('CMSAdmin')
@@ -258,6 +258,33 @@ def editUseradmin(request):
     
     context={'users':queryset}
     return render (request,"edituser.html",context)
+
+
+def editUser(request):
+    username=username=request.user.username
+    userid=request.user.id
+    queryset=User.objects.filter(username=username).values(
+            'username', 'employee__firstname','employee__last_name','employee__email','employee__mobile'
+            )
+    
+    if request.method=='POST':
+        username=request.POST.get('username')
+        firstname=request.POST.get('firstname')
+        last_name=request.POST.get('last_name')
+        email=request.POST.get('email')
+        id=User.objects.filter(username=username).values('id')
+        Employee.objects.filter(username=id[0]['id']).update(firstname=firstname,last_name=last_name,email=email)
+        User.objects.filter(username=username).update(email=email)
+        
+        queryset=User.objects.filter(id=userid).values(
+            'username', 'employee__firstname','employee__last_name','employee__email','employee__mobile','addresstable__state','payment__balance'
+            )
+        context={'employee':queryset}
+
+        return render(request,'userprofile.html',context)
+    
+    context={'users':queryset}
+    return render (request,"editemployee.html",context)
 
 @group_required('CMSAdmin')
 def assignroles(request):
