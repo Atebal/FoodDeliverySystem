@@ -159,8 +159,6 @@ def employeehistory(username,receipe):
         )
         emph.save()
    
-
-
 #add user selected food receipe
 @login_required
 def addordersdetail(request):
@@ -274,3 +272,17 @@ def getitemsincart(username):
      return order_items
 
 
+def getallrecepies(request):
+     items=Item.objects.all()
+     context={'items':items}
+     return render(request,"recepies.html",context)
+
+def getreceipedetails(request):
+    query_string=request.GET
+    id=query_string['id']
+    #itemid=json.loads(query_string)
+    item=Item.objects.get(id=id)
+    
+    context={'item':item}
+    
+    return render(request,"clickedfooditem.html",context)

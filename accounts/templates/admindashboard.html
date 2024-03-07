@@ -78,7 +78,7 @@
                        
                     </li>
                     <li>
-                        <a href="widgets.html"> <i class="menu-icon ti-email"></i>Update Receipe </a>
+                        <a onclick="listreceipe()"> <i class="menu-icon ti-email"></i>Receipes </a>
                     </li>
 
                 </ul>
@@ -118,17 +118,13 @@
                         </a>
 
                         <div class="user-menu dropdown-menu">
-                            <a class="nav-link" href="#"><i class="fa fa- user"></i>My Profile</a>
-
+                            <a class="nav-link" href="/userdashboard/"><i class="fa fa- user"></i>My Profile</a>
+                            <a class="nav-link" href="/logout"><i class="fa fa-power -off"></i>Logout</a>
                           
-
-                            <a class="nav-link" href="#"><i class="fa fa -cog"></i>Settings</a>
-
-                            <a class="nav-link" href="#"><i class="fa fa-power -off"></i>Logout</a>
                         </div>
                     </div>
 
-                </div>
+                 </div>
             </div>
         </header>
         <!-- /#header -->
@@ -586,7 +582,22 @@ function foodmenu()
         
 }
   
-
+function listreceipe()
+{
+   
+            $.ajax({
+                url: '/listreceipe/',  // URL to the Django view
+                type: 'GET',
+                success: function (response) {
+                    $('#divpages').html(response); 
+                    console.log('got user daat') // Insert rendered HTML into div
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        
+}
       
     </script>
 </body>

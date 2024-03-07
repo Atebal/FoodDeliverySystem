@@ -48,6 +48,8 @@ urlpatterns = [
         path('userdashboard/', userdashboard,name='userdashboard'),
         path('orderhistory/', userorderHistory,name='orderhistory'),
         path('editemployee/', editUser,name='editemployee'),
+        path('listreceipe/', getallrecepies,name='listreceipe'),
+        path('getreceipedetails/', getreceipedetails,name='getreceipedetails'),
         path('admin/', admin.site.urls),
 ]
 

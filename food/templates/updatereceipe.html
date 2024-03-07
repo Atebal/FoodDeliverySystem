@@ -1,28 +1,54 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
-<div class='container mt-5'>
-<form class="col-6 mx-auto card p-3 shadow-lg" method="post" enctype="multipart/form-data">
-    <h2>Add Receipe</h2>
-    {% csrf_token %}
-    <hr>
-    <div class="mb-3" >
-      <label  class="form-label">Receipe Name</label>
-      <input type="text"  value="{{receipe.receipe_name}}" required readonly class="form-control" name="itemName" aria-describedby="emailHelp">
+<body>
+  <div class="modal fade" id="editusermodal" tabindex="-2" role="dialog" aria-labelledby="edituser" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Edit Receipe</h5>
+              <button   type="button" id= "closebtn" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+        <form id="edituserform">
+              {% csrf_token %}
+          <div class="modal-body" style="height:450px;left:20%">
+            {% for item in items%}
+                  <div class="mb-3">
+                    <label class="form-label">Receipe Name</label>
+                    <input type="input" readonly class="form-control" style="width:75%" value="{{item.itemName}}" name="username">
+                    
+                  </div>
+                  <div class="mb-3">
+                    <label  class="form-label">Receipe</label>
+                    <input type="email" class="form-control" style="width:75%" style="width:75%" name="email" value="{{item.price}}">
+                  </div>
+                  <div class="mb-3">
+                    <label  class="form-label">Price</label>
+                    <input type="input" class="form-control" style="width:75%" style="width:75%" value="{{item.price}}" name="firstname">
+                  </div>
+                  <div class="mb-3">
+                      <label  class="form-label">Qty</label>
+                      <input type="input" class="form-control" style="width:75%" value="{{item.totalquantities}}" name="last_name">
+                    </div>
+                     <div class="mb-3">
+                      <label  class="form-label">Image</label>
+                      <input type="input" class="form-control" style="width:75%" readonly name="mobile" value="{{item.price}}">
+                    </div>
+                   {% endfor %}             
+          </div>
+          <div class="modal-footer">
+            <button id="edituderbtn"  class="btn btn-secondary" type="submit">Submit</button>
+       </div>
+      </form> 
+          
+      
         </div>
-    <div class="mb-3">
-      <label  class="form-label">Receipe Description</label>
-      <textarea required value="{{receipe.receipe_name}}" class="form-control" name="receipe">{{receipe.receipe_name}}</textarea>
-    </div>
-    <div class="mb-3">
-        <label  class="form-label">Price</label>
-        <input type="text"  class="form-control" name="price">
-      </div>
-    <div class="mb-3">
-        <label  class="form-label">Receipe Image</label>
-        <input type="file" value="{{receipe.receipe_name}}" class="form-control" name="re_image">
-      </div>
-      <button type="submit" class="btn btn-success">Add Receipe</button>
-  </form>
+   </div>
+  </div>
 
+
+ 
+  </body>
   <hr>
   
