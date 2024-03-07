@@ -50,6 +50,11 @@ urlpatterns = [
         path('editemployee/', editUser,name='editemployee'),
         path('listreceipe/', getallrecepies,name='listreceipe'),
         path('getreceipedetails/', getreceipedetails,name='getreceipedetails'),
+        path('updatereceipe/', updatereceipe,name='updatereceipe'),
+        path('deletereceipe/', deletereceipe,name='deletereceipe'),
+        path('whatstoday/', whatstoday,name='whatstoday'),
+        path('createtodayslist/', createtodaylist,name='createtodayslist'),
+        path('todayslist/', whatstodaylist,name='todayslist'),
         path('admin/', admin.site.urls),
 ]
 

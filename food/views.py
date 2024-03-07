@@ -207,7 +207,7 @@ def addfooditem(request):
         itemName=request.POST.get('itemName')
         receipe=request.POST.get('receipe')
         price=request.POST.get('price')
-        image= request.FILES.get('re_image')
+        image= request.FILES.get('image')
         totalquantities=request.POST.get('totalquantities')
         item=Item.objects.create(
             itemName=itemName,
@@ -278,11 +278,72 @@ def getallrecepies(request):
      return render(request,"recepies.html",context)
 
 def getreceipedetails(request):
-    query_string=request.GET
-    id=query_string['id']
-    #itemid=json.loads(query_string)
-    item=Item.objects.get(id=id)
     
-    context={'item':item}
+    id=request.GET.get('id')
+        
+    queryset=Item.objects.filter(id=id)
     
-    return render(request,"clickedfooditem.html",context)
+    context={'items':queryset}
+    
+    return render(request,"updatereceipe.html",context)
+
+
+def updatereceipe(request):
+    if request.method=='POST':
+        id=request.POST.get('id')
+        itemName=request.POST.get('itemName')
+        receipe=request.POST.get('receipe')
+        price=request.POST.get('price')
+        totalquantities=request.POST.get('totalquantities')
+        
+
+        Item.objects.filter(id=id).update(
+          itemName=itemName,
+          receipe=receipe,
+          price=price,
+          totalquantities=totalquantities,
+          
+        )
+
+    items=Item.objects.all()
+    context={'items':items}
+    return render(request,"recepies.html",context)
+
+
+def deletereceipe(request):
+    if request.method=='POST':
+        id=request.POST.get('id')
+        Item.objects.filter(id=id).delete()
+        items=Item.objects.all()
+        context={'items':items}
+        return render(request,"recepies.html",context) 
+
+def whatstoday(request):
+     items=Item.objects.all()
+     context={'items':items}
+     return render(request,"itemoftheday.html",context)
+
+def createtodaylist(request):
+    if request.method=="POST":
+        id=request.POST.get('id')
+        itemslist=json.loads(request.POST.get('items'))
+        TodaysMenu.objects.all().delete()
+        for lst in itemslist:
+            id=lst['id']
+            itemdetails=Item.objects.filter(id=id)
+            objtd=TodaysMenu.objects.create(
+                itemName=itemdetails[0].itemName,
+                receipe=itemdetails[0].receipe,
+                price=itemdetails[0].price,
+                image=itemdetails[0].image,
+                totalquantities=lst['totalquantities']
+            )
+            objtd.save() 
+        items=TodaysMenu.objects.all()
+        context={'items':items}
+        return render(request,"todaysmenu.html",context)
+    
+def whatstodaylist(request):
+    items=TodaysMenu.objects.all()
+    context={'items':items}
+    return render(request,"todaysmenu.html",context)

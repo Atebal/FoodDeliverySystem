@@ -1,0 +1,8 @@
+.receipedig{
+    display: flex;
+    height: 400px;
+    /* left: 20%; */
+    column-gap: 20px;
+    width:100%;
+    flex-wrap: wrap;
+}

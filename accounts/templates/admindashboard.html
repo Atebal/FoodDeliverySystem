@@ -37,6 +37,7 @@
     <link rel="stylesheet" href="{% static 'css/cs-skin-elastic.css' %}">
     <link rel="stylesheet" href="{% static 'css/adminpanel.css' %}" type="text/css" />
     <link rel="stylesheet" href="{% static 'css/dataTables.bootstrap.min.css' %}">
+    <link type="text/css" href="//gyrocode.github.io/jquery-datatables-checkboxes/1.2.12/css/dataTables.checkboxes.css" rel="stylesheet" />
     <link rel="stylesheet" href="{% static 'css/adminpanel.css' %}" type="text/css" />
     <link rel="stylesheet" href="{% static 'css/cs-skin-elastic.css' %}" type="text/css" />
     <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/html5shiv/3.7.3/html5shiv.min.js"></script> -->
@@ -73,13 +74,19 @@
                     <li class="menu-title">Items Management</li><!-- /.menu-title -->
 
                     <li class="menu-item-has-children dropdown">
-                        <a onclick=foodmenu() class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-                            aria-expanded="false"> <i class="menu-icon fa fa-tasks"></i> Menu</a>
+                        <a onclick="createwhatstoday()" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false"> <i class="menu-icon fa fa-tasks"></i> Create Today's list</a>
                        
                     </li>
                     <li>
+                      <a onclick="whatstodaylist()"> <i class="menu-icon ti-email"></i>what's Today </a>
+                  </li>
+                    <li>
                         <a onclick="listreceipe()"> <i class="menu-icon ti-email"></i>Receipes </a>
                     </li>
+                    <li>
+                      <a href="/additem/"> <i class="menu-icon ti-email"></i>Add Receipe </a>
+                  </li>
 
                 </ul>
             </div><!-- /.navbar-collapse -->
@@ -93,7 +100,7 @@
             <div class="top-left">
                 <div class="navbar-header">
                     <a class="navbar-brand" href="/"><img style="height:59.98px;width:53px" src="{%static 'Images/canteen.svg' %}" alt="Logo"></a>
-                    <a class="navbar-brand hidden" href="./"><img src="images/logo2.png" alt="Logo"></a>
+                    <a class="navbar-brand hidden" href="./"><img src="#" alt="Logo"></a>
                     <a id="menuToggle" class="menutoggle"><i class="fa fa-bars"></i></a>
                 </div>
             </div>
@@ -251,12 +258,13 @@
     
  
     
-    <script src="{% static 'js/main.js' %}"></script>
+    <!--<script src="{% static 'js/main.js' %}"></script>-->
     <script src="{% static 'js/datatables.min.js' %}"></script>
     
     <script src="{% static 'js/dataTables.bootstrap.min.js' %}"></script>
     <script src="{% static 'js/dataTables.buttons.min.js' %}"></script>
     <script src="{% static 'js/buttons.bootstrap.min.js' %}"></script>
+    <script type="text/javascript" src="//gyrocode.github.io/jquery-datatables-checkboxes/1.2.12/js/dataTables.checkboxes.min.js"></script>
     <script src="{% static 'js/jszip.min.js' %}"></script>
     <script src="{% static 'js/vfs_fonts.js' %}"></script>
     <script src="{% static 'js/buttons.html5.min.js' %}"></script>
@@ -512,7 +520,7 @@ function getarrayfromstring(str)
 }
 
 
-    function displayuser()
+function displayuser()
     {
               debugger;
             $.ajax({
@@ -589,8 +597,9 @@ function listreceipe()
                 url: '/listreceipe/',  // URL to the Django view
                 type: 'GET',
                 success: function (response) {
+                  debugger;
                     $('#divpages').html(response); 
-                    console.log('got user daat') // Insert rendered HTML into div
+                    console.log('got receipe data') // Insert rendered HTML into div
                 },
                 error: function (error) {
                     console.log(error);
@@ -598,7 +607,130 @@ function listreceipe()
             });
         
 }
+  
+
+function createwhatstoday()
+   {
       
+    $.ajax({
+                url: '/whatstoday/',  // URL to the Django view
+                type: 'GET',
+                success: function (response) {
+                  debugger;
+                    $('#divpages').html(response); 
+                    console.log('got receipe data') // Insert rendered HTML into div
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+   }
+   
+   function whatstodaylist()
+   {
+      
+    $.ajax({
+                url: '/todayslist/',  // URL to the Django view
+                type: 'GET',
+                success: function (response) {
+                  debugger;
+                    $('#divpages').html(response); 
+                    console.log('got receipe data') // Insert rendered HTML into div
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+   } 
+
+     function getreceipedetails() {
+            
+      var table = $('#bootstrap-data-table-receipe').DataTable();          
+
+     $('#bootstrap-data-table-receipe tbody').on('click', 'td', function () {
+
+      
+                            debugger;
+            var cellIndex = table.cell(this).index();
+            var cellData = table.cell(this).data();
+            var rowIndex = table.row($(this).closest('tr')).index();
+            var rowData = table.row(rowIndex).data();
+            var id=table.row(rowIndex).data().DT_RowId
+           
+            if(cellIndex.column==3){
+                
+    
+            debugger;
+            $.ajax({
+                type: 'GET',
+                url: '/getreceipedetails/',  // URL to the Django view
+                data: { 'id': id 
+                        },
+                success: function (response) {
+                    debugger;
+                    console.log("entered")
+                    $('#divpopedit').html(response);
+                    
+                    $("#editr").modal('show');
+                    // $('#divpages').html(response); 
+
+
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+          }
+        else if(cellIndex.column==4)
+        {
+
+        var csrfToken = '{{ csrf_token }}'; // Obtain CSRF token from Django template
+        $.ajax({
+            type: 'POST',
+            url: '/deletereceipe/',
+            data: {
+                'id': id,
+                
+                'csrfmiddlewaretoken': csrfToken
+            },
+            success: function (response) {
+                $('#divpages').html(response);
+            },
+            error: function (xhr, status, error) {
+                console.error(xhr.responseText);
+            }
+        });
+
+    }
+        
+          }); 
+
+        }
+
+    
+function deletereceipe(id) {
+        var csrfToken = '{{ csrf_token }}'; // Obtain CSRF token from Django template
+        $.ajax({
+            type: 'POST',
+            url: '/deletereceipe/',
+            data: {
+                'id': id,
+                
+                'csrfmiddlewaretoken': csrfToken
+            },
+            success: function (response) {
+                $('#divpages').html(response);
+            },
+            error: function (xhr, status, error) {
+                console.error(xhr.responseText);
+            }
+        });
+
+    }
+
+
+
+    
     </script>
 </body>
 

@@ -71,7 +71,12 @@ class orders(models.Model):
     itemquantity=models.IntegerField(default=0)
     isplacedbyadmin=models.BooleanField(default=False)
 
-
+class TodaysMenu(models.Model):
+    itemName=models.CharField(max_length=100)
+    receipe=models.CharField(max_length=200,default='',null=True,blank=True)
+    price=models.FloatField(default=0)
+    image=models.ImageField(upload_to="Images")
+    totalquantities=models.IntegerField(default=0,null=True,blank=True)
 
 
 
