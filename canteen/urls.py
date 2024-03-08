@@ -55,6 +55,7 @@ urlpatterns = [
         path('whatstoday/', whatstoday,name='whatstoday'),
         path('createtodayslist/', createtodaylist,name='createtodayslist'),
         path('todayslist/', whatstodaylist,name='todayslist'),
+        path('searchfood/', searchfood,name='searchfood'),
         path('admin/', admin.site.urls),
 ]
 

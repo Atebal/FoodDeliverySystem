@@ -115,7 +115,8 @@ def profile(request):
     
     userid=request.user.id
     queryset=User.objects.filter(id=userid).values(
-            'username', 'employee__firstname','employee__last_name','employee__email','employee__mobile','addresstable__state','payment__balance'
+            'username', 'employee__firstname','employee__last_name','employee__email','employee__mobile',
+            'payment__balance','addresstable__street','addresstable__district','addresstable__state'
             )
     context={'employee':queryset}
     return render(request,"userprofile.html",context)
@@ -137,7 +138,7 @@ def address(request,id):
             'username', 'employee__firstname','employee__last_name','employee__email','employee__mobile','addresstable__state','payment__balance'
             )
         context={'employee':queryset}
-        return render(request,'userprofile.html',context)
+        return redirect(request,'/adminpanel')
     return render(request,"address.html")
 
 @group_required('CMSAdmin')
@@ -191,7 +192,11 @@ def displayallusers(request):
 def payment(request):
     if request.method=="POST":
         username=request.user.username
+        customername=request.POST.get('username')
         balance=request.POST.get('balance')
+        if customername!='':
+            username=customername
+
         user=User.objects.get(username=username)
         queryset=User.objects.filter(username=username).values(
             'id','username','payment__balance'
@@ -237,7 +242,8 @@ def deleteuser(request):
 def editUseradmin(request):
     username=username=request.GET.get('username')
     queryset=User.objects.filter(username=username).values(
-            'username', 'employee__firstname','employee__last_name','employee__email','employee__mobile'
+            'username', 'employee__firstname','employee__last_name','employee__email',
+            'employee__mobile','addresstable__street','addresstable__district','addresstable__state'
             )
     
     if request.method=='POST':
@@ -245,12 +251,17 @@ def editUseradmin(request):
         firstname=request.POST.get('firstname')
         last_name=request.POST.get('last_name')
         email=request.POST.get('email')
+        street=request.POST.get('street')
+        district=request.POST.get('district')
+        state=request.POST.get('state')
         id=User.objects.filter(username=username).values('id')
         Employee.objects.filter(username=id[0]['id']).update(firstname=firstname,last_name=last_name,email=email)
+        AddressTable.objects.filter(username=id[0]['id']).update(street=street,district=district,state=state)
         User.objects.filter(username=username).update(email=email)
         
         queryset=User.objects.all().values(
-            'username', 'employee__firstname','employee__last_name','employee__email','employee__mobile','addresstable__state','payment__balance'
+            'username', 'employee__firstname','employee__last_name','employee__email','employee__mobile','payment__balance',
+            'addresstable__street','addresstable__district','addresstable__state'
             )
         context={'users':queryset}
 
@@ -272,12 +283,18 @@ def editUser(request):
         firstname=request.POST.get('firstname')
         last_name=request.POST.get('last_name')
         email=request.POST.get('email')
+        street=request.POST.get('street')
+        district=request.POST.get('district')
+        state=request.POST.get('state')
+
         id=User.objects.filter(username=username).values('id')
         Employee.objects.filter(username=id[0]['id']).update(firstname=firstname,last_name=last_name,email=email)
         User.objects.filter(username=username).update(email=email)
+        AddressTable.objects.filter(username=id[0]['id']).update(street=street,district=district,state=state)
         
         queryset=User.objects.filter(id=userid).values(
-            'username', 'employee__firstname','employee__last_name','employee__email','employee__mobile','addresstable__state','payment__balance'
+            'username', 'employee__firstname','employee__last_name','employee__email','employee__mobile',
+            'payment__balance','addresstable__street','addresstable__district','addresstable__state'
             )
         context={'employee':queryset}
 

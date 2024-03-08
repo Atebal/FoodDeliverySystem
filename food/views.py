@@ -29,6 +29,12 @@ def fooditems(request):
      
     return render(request,"food.html",context)
     
+def searchfood(request):
+    queryset=Item.objects.all()
+    queryset=queryset.filter(itemName__icontains=request.GET.get('search'))
+    context={'items':queryset}
+    return render(request,"food.html",context)
+
 
 def foodmenu(request):
      items=Item.objects.all()
@@ -59,21 +65,12 @@ def getitemdetails(request):
 @login_required
 def itemcart(request):
     userid=request.user.id
-    #isAdminplaced=request.POST.get('isAdminplaced')
-    #employeename=request.POST.get('employeename')
     user=Employee.objects.filter(isguestlogin=True).values('username')
     if user.exists():
           userid=user[0]['username']
           username=User.objects.filter(id=userid)
 
-    '''if(isAdminplaced=='true'):
-        employee=User.objects.filter(username=employeename).values('id')
-        employeeid=employee[0]['id']
-        order_items = orders.objects.filter(username=employeeid,incart=True,isplacedbyadmin=True).select_related('receipeid').values(
-                                    'receipeid__itemName','receipeid__price','receipeid__receipe','receipeid__image',
-                                    'itemquantity','receipeid','orderid','receipeid__id')
-    '''
-    
+       
     order_items = orders.objects.filter(username=userid,incart=True).select_related('receipeid').values(
                                     'receipeid__itemName','receipeid__price','receipeid__receipe','receipeid__image',
                                     'itemquantity','receipeid','orderid','receipeid__id')
@@ -101,18 +98,9 @@ def checkout(request):
      user=Employee.objects.filter(isguestlogin=True).values('username')
      if user.exists():
           userid=user[0]['username']
-          #username=User.objects.filter(id=userid)
-     #isAdminplaced=request.POST.get('isAdminplaced')
-     #employeename=request.POST.get('employeename')
-    
-    ''''if(isAdminplaced=='true'):
-        ordercheckout(employeename,total,receipe,ordersdata,True)
-        updatetransactions(username,total)
-        employeehistory(username,receipe)
-        updateitemsquantity(receipe)
-        '''
- 
+          
     ordercheckout(ordersdata)
+    updatepbalance(userid,total)
     updatetransactions(userid,total)
     employeehistory(userid,receipe)
     updateitemsquantity(receipe)
@@ -134,7 +122,7 @@ def updateitemsquantity(receipe):
     totalquantities=0
     for it in receipe:
         totalquantities=int(it.get('quantity'))-totalquantities
-       # Item.objects.filter(id=it.rec.get('receipeid')).update(totalquantities=totalquantities)
+        Item.objects.filter(id=it.get('receipeid')).update(totalquantities=totalquantities)
         totalquantities=0
     
 
@@ -146,7 +134,13 @@ def updatetransactions(username,total):
         transactype='debit'
         )
     trans.save()
+def updatepbalance(userid,total):
     
+        paymnt=Payment.objects.filter(username=userid).values('balance')
+        existingbalance=paymnt[0]['balance']
+        newbal=existingbalance-int(total)
+        Payment.objects.filter(username=userid).update(balance=newbal)
+     
 #helper function for employee to record hitory of employee
 def employeehistory(username,receipe):
      for rec in receipe:

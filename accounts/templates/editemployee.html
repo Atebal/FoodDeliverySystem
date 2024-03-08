@@ -38,15 +38,15 @@
                       </div>
                       <div >
                       <label  class="form-label">street</label>
-                      <input class="form-control" style="width:75%" type="input" placeholder='Stree' name='street'  />
+                      <input class="form-control" style="width:75%" type="input" value="{{user.addresstable__street}}" placeholder='Stree' name='street'  />
                       </div>
                       <div >
                       <label  class="form-label">district</label>
-                      <input class="form-control" style="width:75%"type="input" placeholder='District' name='district'/> 
+                      <input class="form-control" style="width:75%"type="input" value="{{user.addresstable__district}}" placeholder='District' name='district'/> 
                     </div>
                     <div >
                       <label  class="form-label">state</label>
-                      <input class="form-control" style="width:75%" type="input" placeholder='State' name='state'  />
+                      <input class="form-control" style="width:75%" type="input"  value="{{user.addresstable__state}}"placeholder='State' name='state'  />
                     </div>
                      {% endfor %}             
             </div>
@@ -77,6 +77,9 @@ document.getElementById('edituserform').addEventListener('submit', function (eve
     var last_nameField = document.getElementsByName('last_name')[0];
     var emailField = document.getElementsByName('email')[0];
     var mobileField = document.getElementsByName('mobile')[0];
+    var streetField = document.getElementsByName('street')[0];
+    var districtField = document.getElementsByName('district')[0];
+    var stateField = document.getElementsByName('state')[0];
    // var passwordField = document.getElementsByName('password')[0];
     
     // Get the values entered by the user
@@ -85,6 +88,9 @@ document.getElementById('edituserform').addEventListener('submit', function (eve
     var last_name = last_nameField.value;
     var email = emailField.value;
     var mobile = mobileField.value;
+    var street=streetField.value;
+    var district=districtField.value;
+    var state=stateField.value;
    //var password = passwordField.value;
     // Create a FormData object and set the form data
     var formData = new FormData();
@@ -93,6 +99,10 @@ document.getElementById('edituserform').addEventListener('submit', function (eve
     formData.append('last_name', last_name);
     formData.append('email', email);
     formData.append('mobile', mobile);
+    formData.append('street', street);
+    formData.append('district', district);
+    formData.append('state', state);
+   
     //formData.append('password', password);
 
     var formData = new FormData(this);

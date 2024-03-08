@@ -60,6 +60,22 @@
   .navbar .right {
     position: relative;
   } */
+
+  .left {
+    display: flex;
+    align-items: center;
+    margin-left: 95px;
+  }
+
+  .right {
+    display: flex;
+    align-items: center;
+    padding-left: 500px;
+    position: relative;
+    height: 80px;
+    /*cursor: pointer;*/
+  }
+
   .location-div .other {
     font-weight: 700;
     color: #3d4152;
@@ -127,7 +143,7 @@
   /* Content Section */
   .restaurants .container {
     /* max-width: 1200px; */
-    min-width: 1500px;
+    /*min-width: 1500px;*/
     position: relative;
     margin: 0 auto;
     padding-top: 42px;
@@ -137,6 +153,7 @@
   }
   .container .item-bar {
     display: flex;
+    column-gap: 20px;
     align-items: center;
     justify-content: space-between;
   }
