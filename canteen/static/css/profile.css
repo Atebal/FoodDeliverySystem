@@ -140,7 +140,7 @@ p {
 .btns{
     top: 40px;
     position: relative;
-    left: 68%;
+    left: 90%;;
 }
 
 .lgcs{    
@@ -163,3 +163,19 @@ p {
         flex-wrap: wrap;
 }
     
+
+.imagepos{
+    position: relative;
+    max-width: 100%;
+    left: 15%;
+}
+
+
+.ptext {
+    font-size: 16px;
+    font-family: "Open Sans", sans-serif;
+    font-weight: 400;
+    line-height: 24px;
+    text-align: center;
+    color: #0f0e0e;
+}

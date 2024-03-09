@@ -1,0 +1,86 @@
+{% block start %}
+
+{% load static %}
+
+
+<!doctype html>
+
+<html class="no-js" lang=""> 
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+
+    <div class="content">
+        <div class="animated fadeIn">
+            <div class="row">
+
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <strong class="card-title">Today's Menu</strong>
+                        </div>
+                        <div class="card-body">
+                            <form id="myform" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <table id="bootstrap-data-table-receipe" class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Item Name</th>
+                                            <th>Receipe</th>
+                                            <th>Price</th>
+                                            <th>Quantity</th>
+                                            
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for item in items%}
+                                        <tr>
+                                            <td>{{item.itemName}}</td>
+                                            <td>{{item.receipe}}</td>
+                                            <td>{{item.price}}</td>
+                                            <td>{{item.totalquantities}}</td>
+                                                                                        
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div><!-- .animated -->
+    </div><!-- .content -->
+
+
+    <div class="clearfix"></div>
+   
+    </div><!-- /#right-panel -->
+ 
+  <div id="divpopedit">
+
+  </div>
+
+  
+
+
+    
+    <!-- Scripts -->
+   
+
+
+  
+</body>
+
+</html>
+
+{% endblock %}

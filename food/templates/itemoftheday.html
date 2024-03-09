@@ -48,10 +48,10 @@
                                     <tbody>
                                         {% for item in items%}
                                         <tr id="{{item.id}}">
-                                            <td><input type="checkbox" /></td>
+                                            <td><input  type="checkbox" /></td>
                                             <td>{{item.itemName}}</td>
                                             <td>{{item.price}}</td>
-                                            <td><input type= text value="{{item.totalquantities}}"></td>
+                                            <td> <input class="form-control"  type= numeric value="{{item.totalquantities}}"></td>
                                                                                        
                                         </tr>
                                         {% endfor %}

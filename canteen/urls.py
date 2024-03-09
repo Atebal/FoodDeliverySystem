@@ -56,6 +56,7 @@ urlpatterns = [
         path('createtodayslist/', createtodaylist,name='createtodayslist'),
         path('todayslist/', whatstodaylist,name='todayslist'),
         path('searchfood/', searchfood,name='searchfood'),
+        path('todaysmenupublic/', whatstodaylistpublic,name='todayspublic'),
         path('admin/', admin.site.urls),
 ]
 

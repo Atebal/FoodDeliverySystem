@@ -7,7 +7,7 @@
   }
   
   /* navbar section */
-  /* .navbar {
+   .navbar {
     box-shadow: 0 15px 40px -20px rgb(40 44 63 / 15%);
     position: fixed;
     top: 0;
@@ -24,7 +24,7 @@
     position: relative;
     margin: 0 auto;
     height: 80px;
-    /* background: #fff; 
+     background: #fff; 
     display: flex;
     justify-content: space-between;
 }
@@ -59,22 +59,11 @@
   }
   .navbar .right {
     position: relative;
-  } */
+    /*right: 40%;
+    top:40px; */
+  } 
 
-  .left {
-    display: flex;
-    align-items: center;
-    margin-left: 95px;
-  }
-
-  .right {
-    display: flex;
-    align-items: center;
-    padding-left: 500px;
-    position: relative;
-    height: 80px;
-    /*cursor: pointer;*/
-  }
+  
 
   .location-div .other {
     font-weight: 700;
@@ -520,16 +509,6 @@
  #usr:hover .forLogoutBox {
   display: block; /* Show the .forLogoutBox when hovering over #usr */
 }
- 
-
-.todaymenu
-{
-  position: relative;
-  top: 10px;
-  text-align: center;
-  font-size: 30px;
-}
-
 
 .register_create {
   text-align: left;
@@ -552,4 +531,23 @@
   outline: none;
   width: 80%;
  
+}
+
+.searchbox 
+{  
+  
+  display: flex;
+  margin-top: 20px; 
+}
+
+.todaymenu
+{
+  position: relative;
+  text-decoration: underline;
+     /*top: -50px;*/
+    /* right:270px;*/
+    right: 30%;
+     font-size: 30px;
+     
+
 }

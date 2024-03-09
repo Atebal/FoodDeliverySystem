@@ -505,13 +505,13 @@
 }
  
 
-.todaymenu
+/*.todaymenu
 {
   position: relative;
   top: 80px;
   text-align: center;
   font-size: 80px;
-}
+}*/
 
 
 .register_create {
@@ -538,6 +538,8 @@
 }
 
 .searchbox 
-{  display: flex;
-margin-top: 10px;
+{  
+  
+  display: flex;
+  margin-top: 20px; 
 }

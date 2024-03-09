@@ -28,7 +28,7 @@ def fooditems(request):
     context={'items':items,'cartcount':cartcount}
      
     return render(request,"food.html",context)
-    
+
 def searchfood(request):
     queryset=Item.objects.all()
     queryset=queryset.filter(itemName__icontains=request.GET.get('search'))
@@ -62,7 +62,7 @@ def getitemdetails(request):
     
     return render(request,"clickedfooditem.html",context)
 
-@login_required
+@login_required(login_url='/login/')
 def itemcart(request):
     userid=request.user.id
     user=Employee.objects.filter(isguestlogin=True).values('username')
@@ -74,18 +74,18 @@ def itemcart(request):
     order_items = orders.objects.filter(username=userid,incart=True).select_related('receipeid').values(
                                     'receipeid__itemName','receipeid__price','receipeid__receipe','receipeid__image',
                                     'itemquantity','receipeid','orderid','receipeid__id')
-
+    address=AddressTable.objects.filter(username=userid).values('street','district','state')
     ordtotal=0
     total=0
     for ord in order_items:
         ordtotal += (ord['itemquantity'] * ord['receipeid__price'])
     
     total=(ordtotal*0.2) + ordtotal    
-    context={'items':order_items,'subtotal':ordtotal,'total':total}
+    context={'items':order_items,'subtotal':ordtotal,'total':total,'address':address}
     
     return render(request,"itemcart.html",context)
 
-@login_required
+@login_required(login_url="/login/")
 def checkout(request):
     if request.method=='POST':
      username=request.user
@@ -154,7 +154,7 @@ def employeehistory(username,receipe):
         emph.save()
    
 #add user selected food receipe
-@login_required
+@login_required(login_url="/login/")
 def addordersdetail(request):
     
     if request.method=="POST":
@@ -182,7 +182,7 @@ def addordersdetail(request):
         cartcount=carcount(userid)
         return JsonResponse({'message':'order added','cartcount':cartcount},safe=False)
 
-@login_required
+@login_required(login_url="/login/")
 def deletecartitem(request):
    
    orderid=request.GET.get('orderid')
@@ -195,7 +195,7 @@ def deletecartitem(request):
   
 
 # add receipe details inserted by admin
-@login_required
+@login_required(login_url="/login/")
 def addfooditem(request):
     if request.method=="POST":
         itemName=request.POST.get('itemName')
@@ -335,9 +335,14 @@ def createtodaylist(request):
             objtd.save() 
         items=TodaysMenu.objects.all()
         context={'items':items}
-        return render(request,"todaysmenu.html",context)
+        return render(request,"admintodayitemlist.html",context)
     
 def whatstodaylist(request):
+    items=TodaysMenu.objects.all()
+    context={'items':items}
+    return render(request,"admintodayitemlist.html",context)
+
+def whatstodaylistpublic(request):
     items=TodaysMenu.objects.all()
     context={'items':items}
     return render(request,"todaysmenu.html",context)

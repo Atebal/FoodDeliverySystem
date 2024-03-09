@@ -3,22 +3,28 @@
  
 <link rel="stylesheet" href="{% static 'css/todaysmenu.css' %}" type="text/css" />
      
-<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.2/css/bootstrap.min.css'> 
-  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<!-- <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.2/css/bootstrap.min.css'> -->
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+ 
+ <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css" />
 
+ 
+ <link rel="preconnect" href="https://fonts.googleapis.com" />
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+ <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;700;900&display=swap" rel="stylesheet" />
   
-   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"> -->
-   
+  
 
 <div class="main-container card">
     <header class="navbar">
         <div class="global-nav">
             <div class="nav">
                 <div class="left" >
+                    <ul class="items">
                     <a href="/" class="logo">
-                      
-                        <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                    <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                         height="60" width="60" viewBox="0 0 277 245" enable-background="new 0 0 277 245" xml:space="preserve">
                    <path fill="#FF7500" opacity="1.000000" stroke="none" 
                        d="
@@ -2235,13 +2241,37 @@
                        C67.969978,134.032257 67.995575,134.006531 68.010025,133.996033 
                    z"/>
                    </svg>
-
                     </a>
-                  
+                </ul>
                 </div>
-                <div class="right" style="text-align: center;">Today's Menu</div>
+                <div class="right">
+                    <ul class="items">
+                        <li>
+                            <div class="nav-item">
+                              <span class="todaymenu"> Today's Menu</span>
+                            </div>
+                            </li>
+                    <li>
+                        <div class="nav-item">
+                            <form  action="{% url 'searchfood' %}" method="GET">
+                            <div class="mb-3 searchbox"> 
+                            <input type="text"  class="form-control" name="search">
+                            <button type="submit"  class="btn btn-outline-light">
+                                <svg class="_1GTCc" viewBox="5 -1 12 25" height="17" width="17" fill="#686b78">
+                                    <path
+                                        d="M17.6671481,17.1391632 L22.7253317,22.1973467 L20.9226784,24 L15.7041226,18.7814442 C14.1158488,19.8024478 12.225761,20.3946935 10.1973467,20.3946935 C4.56550765,20.3946935 0,15.8291858 0,10.1973467 C0,4.56550765 4.56550765,0 10.1973467,0 C15.8291858,0 20.3946935,4.56550765 20.3946935,10.1973467 C20.3946935,12.8789625 19.3595949,15.3188181 17.6671481,17.1391632 Z M10.1973467,17.8453568 C14.4212261,17.8453568 17.8453568,14.4212261 17.8453568,10.1973467 C17.8453568,5.97346742 14.4212261,2.54933669 10.1973467,2.54933669 C5.97346742,2.54933669 2.54933669,5.97346742 2.54933669,10.1973467 C2.54933669,14.4212261 5.97346742,17.8453568 10.1973467,17.8453568 Z">
+                                    </path>
+                                </svg>
+                                <span></span>
+                            </button>
+                        </div>
+                        </form>
+                        </div>
+                    </li>
+                
+            </ul>
             </div>
-            
+        </div>
         </div>
     </header>
       

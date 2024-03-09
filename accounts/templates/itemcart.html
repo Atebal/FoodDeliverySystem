@@ -2379,8 +2379,12 @@
       <div class="grid_12 delivery-payment">
         <div class="grid_6 delivery-address">
           <h3>Delivery Address</h3>
-          <p>46 Vale Road</br>
-            Ramsgate</p>
+          {% for addr in address %}
+          <p>{{addr.street}}</br>
+            {{addr.district}} </br>
+            {{addr.state}}
+        </p>
+{% endfor%}
         </div>
         <div class="grid_6 payment-details">
           <h3>Payment Card</h3>
@@ -2413,7 +2417,7 @@
           </div>
           <div class="btn-summary">
   
-            <a href="#" class="btn-checkout btn-reverse">Continue Shopping</a>
+            <a href="/" class="btn-checkout btn-reverse">Continue Shopping</a>
   
             <button type="submit" class="btn-checkout">Checkout</button>
   

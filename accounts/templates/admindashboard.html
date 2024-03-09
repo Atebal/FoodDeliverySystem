@@ -38,9 +38,8 @@
     <link rel="stylesheet" href="{% static 'css/adminpanel.css' %}" type="text/css" />
     <link rel="stylesheet" href="{% static 'css/dataTables.bootstrap.min.css' %}">
     <link type="text/css" href="//gyrocode.github.io/jquery-datatables-checkboxes/1.2.12/css/dataTables.checkboxes.css" rel="stylesheet" />
-    <link rel="stylesheet" href="{% static 'css/adminpanel.css' %}" type="text/css" />
-    <link rel="stylesheet" href="{% static 'css/cs-skin-elastic.css' %}" type="text/css" />
-    <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/html5shiv/3.7.3/html5shiv.min.js"></script> -->
+   
+        <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/html5shiv/3.7.3/html5shiv.min.js"></script> -->
     <link href="https://cdn.jsdelivr.net/npm/chartist@0.11.0/dist/chartist.min.css" rel="stylesheet">
    <!-- <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script> -->
        
@@ -53,26 +52,26 @@
             <div id="main-menu" class="main-menu collapse navbar-collapse">
                 <ul class="nav navbar-nav">
                     <li class="active">
-                        <a href="#"><i class="menu-icon fa fa-laptop"></i>Dashboard </a>
+                        <a href="#"><i class="menu-icon fa fa-laptop"></i>Admin Dashboard </a>
                     </li>
                     <li class="menu-title">User Management</li><!-- /.menu-title -->
                     <li class="menu-item-has-children dropdown">
                         <a onclick=displayuser()   class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-                            aria-expanded="false"> <i class="menu-icon fa fa-cogs"></i>Users</a>
+                            aria-expanded="false"> <i class="menu-icon fa fa-users"></i>Users</a>
                        
                     </li>
                     <li class="menu-item-has-children dropdown">
                         <a onclick="getroles()" class= "dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-                            aria-expanded="false"> <i class="menu-icon fa fa-table"></i> User Roles</a>
+                            aria-expanded="false"> <i class="menu-icon fa fa-user-secret"></i> User Roles</a>
                     </li>
                     <li class="menu-item-has-children dropdown">
                         <a onclick=payment() class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-                            aria-expanded="false"> <i class="menu-icon fa fa-th"></i>Payments</a>
+                            aria-expanded="false"> <i class="menu-icon fa fa-credit-card"></i>Payments</a>
                       
                     </li>
                     <li class="menu-item-has-children dropdown">
                       <a href="/register/"   aria-haspopup="true"
-                          aria-expanded="false"><i class="menu-icon fa fa-th"></i>Add User</a>
+                          aria-expanded="false"><i class="menu-icon fa fa-user-plus"></i>Add User</a>
                     
                   </li>
 
@@ -80,17 +79,17 @@
 
                     <li class="menu-item-has-children dropdown">
                         <a onclick="createwhatstoday()" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-                            aria-expanded="false"> <i class="menu-icon fa fa-tasks"></i> Create Today's list</a>
+                            aria-expanded="false"> <i class="menu-icon fa fa-shopping-basket"></i> Create Today's list</a>
                        
                     </li>
                     <li>
-                      <a onclick="whatstodaylist()"> <i class="menu-icon ti-email"></i>what's Today </a>
+                      <a onclick="whatstodaylist()"> <i class="menu-icon fa fa-coffee"></i>what's Today </a>
                   </li>
                     <li>
-                        <a onclick="listreceipe()"> <i class="menu-icon ti-email"></i>Receipes </a>
+                        <a onclick="listreceipe()"> <i class="menu-icon fa fa-cutlery"></i>Receipes </a>
                     </li>
                     <li>
-                      <a href="/additem/"> <i class="menu-icon ti-email"></i>Add Receipe </a>
+                      <a href="/additem/"> <i class="menu-icon fa fa-plus-square-o"></i>Add Receipe </a>
                   </li>
 
                 </ul>
@@ -103,8 +102,8 @@
         <!-- Header-->
         <header id="header" class="header">
             <div class="top-left">
-                <div class="navbar-header">
-                    <a class="navbar-brand" href="/"><img style="height:59.98px;width:53px" src="{%static 'Images/canteen.svg' %}" alt="Logo"></a>
+                <div class="navbar-header logoheight">
+                    <a class="navbar-brand" href="/"><img class="logopost" src="{%static 'Images/canteen.svg' %}" alt="Logo"></a>
                     <a class="navbar-brand hidden" href="./"><img src="#" alt="Logo"></a>
                     <a id="menuToggle" class="menutoggle"><i class="fa fa-bars"></i></a>
                 </div>
@@ -112,12 +111,12 @@
             <div class="top-right">
                 <div class="header-menu">
                     <div class="header-left">
-                        <button class="search-trigger"><i class="fa fa-search"></i></button>
+                         <button class="search-trigger"></button>
                         <div class="form-inline">
                             <form class="search-form">
-                                <input class="form-control mr-sm-2" type="text" placeholder="Search ..." aria-label="Search">
-                                <button class="search-close" type="submit"><i class="fa fa-close"></i></button>
-                            </form>
+                               <input class="form-control mr-sm-2" type="text" placeholder="Search ..." aria-label="Search">
+                                <button class="search-close" type="submit"><i class="fa fa-close"></i></button> 
+                            </form> 
                         </div>
 
 
@@ -260,10 +259,10 @@
 
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/js/bootstrap.min.js'></script>
-    
+    <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
  
     
-    <!--<script src="{% static 'js/main.js' %}"></script>-->
+    <script src="{% static 'js/main.js' %}"></script>
     <script src="{% static 'js/datatables.min.js' %}"></script>
     
     <script src="{% static 'js/dataTables.bootstrap.min.js' %}"></script>
@@ -286,7 +285,7 @@
     <script>
 
 $(document).ready(function(){
-    debugger;
+   
    var sales= getarrayfromstring("{{salesdate}}")
    var salesdates=removeescapecharchters(sales)
 
@@ -322,6 +321,7 @@ $('#usercnt')[0].innerText='{{usercount}}'
 loadlinechart(salesdates,revenue);
 loadbarchart(salesdates,revenue);
 
+});
 
 function loadlinechart(salesdates,revenue)
 {
@@ -343,24 +343,17 @@ myChart.setOption(
       tooltip: {
         trigger: 'axis'
       },
-      grid: {
+      /*grid: {
         left: '5%',
         right: '15%',
         bottom: '10%'
-      },
+      },*/
       xAxis: {
-        data: salesdates
+        data: salesdates,
+        axisLabel:{fontSize:10},
       },
-      yAxis: {},
-      toolbox: {
-        right: 10,
-        feature: {
-          dataZoom: {
-            yAxisIndex: 'none'
-          },
-          restore: {},
-          saveAsImage: {}
-        }
+      yAxis: {
+        axisLabel:{fontSize:10},
       },
       dataZoom: [
         {
@@ -369,10 +362,11 @@ myChart.setOption(
         {
           type: 'inside'
         }
-      ],
+      ],   
       visualMap: {
-        top: 50,
+        top: 30,
         right: 10,
+        orient: 'horizontal',
         pieces: [
           {
             gt: 0,
@@ -394,15 +388,7 @@ myChart.setOption(
             lte: 20000,
             color: '#FD0100'
           },
-          {
-            gt: 20000,
-            lte: 30000,
-            color: '#AA069F'
-          },
-          {
-            gt: 40000,
-            color: '#AC3B2A'
-          }
+          
         ],
         outOfRange: {
           color: '#999'
@@ -466,21 +452,23 @@ option = {
     }
   },
   legend: {},
-  grid: {
+  /*grid: {
     left: '3%',
     right: '4%',
     bottom: '3%',
     containLabel: true
-  },
+  },*/
   xAxis: [
     {
       type: 'category',
-      data: salesdates
+      data: salesdates,
+      axisLabel:{fontSize:10},
     }
   ],
   yAxis: [
     {
-      type: 'value'
+      type: 'value',
+      axisLabel:{fontSize:10},
     }
   ],
   series: [
@@ -490,9 +478,21 @@ option = {
       emphasis: {
         focus: 'series'
       },
-      data: revenue
+      data: revenue,
+      itemStyle:{
+        borderRadius:[20,20,0,0],
+        color: function(params) {
+                // Check the value of each data point
+                var value = params.data;
+                // Set color based on value
+                if (value <= 500) {
+                    return 'red'; // for values less than or equal to 100, red color
+                } else {
+                    return 'green'; // for values greater than 100, green color
+                }
+            }
     },
-    
+  }
   ]
 };
 
@@ -503,9 +503,6 @@ if (option && typeof option === 'object') {
 window.addEventListener('resize', myChart.resize);
 
 }
-
-});
-
 
 function removeescapecharchters(str)
 {
@@ -631,7 +628,7 @@ function createwhatstoday()
             });
    }
    
-   function whatstodaylist()
+function whatstodaylist()
    {
       
     $.ajax({
@@ -648,7 +645,7 @@ function createwhatstoday()
             });
    } 
 
-     function getreceipedetails() {
+function getreceipedetails() {
             
       var table = $('#bootstrap-data-table-receipe').DataTable();          
 

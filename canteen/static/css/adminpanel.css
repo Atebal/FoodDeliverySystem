@@ -2369,7 +2369,8 @@ footer.site-footer {
       display: inline-block; }
     .card-footer.bg-white [class*="float"].fa {
       display: inline-block;
-      float: left !important; }
+      /*float: left !important;*/
+     }
 
   #traffic-chart {
     height: 232px !important; }
@@ -2503,3 +2504,14 @@ footer.site-footer {
     right: 20px !important; }
 
 /*# sourceMappingURL=style.css.map */
+.logoheight{
+  height: 10px;
+}
+
+
+.logopost{
+  position: relative;
+  height: 59.98px;
+  width: 53px;
+  top: -10px;
+}
