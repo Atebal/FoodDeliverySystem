@@ -4,6 +4,9 @@ import json
 from django.http import HttpResponseBadRequest,JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from .serializer import DataSerializer
 
 
 # Create your views here.
@@ -346,3 +349,12 @@ def whatstodaylistpublic(request):
     items=TodaysMenu.objects.all()
     context={'items':items}
     return render(request,"todaysmenu.html",context)
+
+
+# Create your views here.
+@api_view(['GET'])
+def getallrecepies(request):
+    items = Item.objects.all()
+    serializer = DataSerializer(items, many=True)
+    return Response(serializer.data)
+    
