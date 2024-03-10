@@ -12,10 +12,8 @@ from .serializer import DataSerializer
 # Create your views here.
 
 def fooditems(request):
-    #isAdminplaced=request.COOKIES.get('isAdminplaced')
-    #employeename=request.COOKIES.get('employeename')
     userid=request.user.id
-    items=Item.objects.all()
+    items=Item.objects.filter(totalquantities__gt=0).all()
     cartcount=0
 
     user=Employee.objects.filter(isguestlogin=True).values('username')
@@ -40,7 +38,7 @@ def searchfood(request):
 
 
 def foodmenu(request):
-     items=Item.objects.all()
+     items=Item.objects.filter(totalquantities__gt=0).all()
      cartcount=0
      userid=request.user.id
      user=Employee.objects.filter(isguestlogin=True).values('username')
@@ -92,8 +90,7 @@ def itemcart(request):
 def checkout(request):
     if request.method=='POST':
      username=request.user
-     currentuser=User.objects.filter(username=username).values('id')
-     userid=currentuser[0]['id']
+     userid=request.user.id
      data=request.POST
      total=data.get('total')
      receipe=json.loads(data.get('receipe'))
@@ -162,24 +159,15 @@ def addordersdetail(request):
     
     if request.method=="POST":
         username=request.user
-        currentuser=User.objects.filter(username=username).values('id')
-        userid=currentuser[0]['id']
+        userid= request.user.id      
         receipeid=request.POST.get('id')
         qty=request.POST.get('itemquantity')
-        #cartcount=request.POST.get('cartcount')
+        
         user=Employee.objects.filter(isguestlogin=True).values('username')
         
         if user.exists():
            userid=user[0]['username']
            username=User.objects.filter(id=userid)
-        #isAdminplaced=request.POST.get('isAdminplaced')
-        #employeename=request.POST.get('employeename')
-        
-        '''if (isAdminplaced=='true'):
-                orderplaced(receipeid,qty,employeename,True)
-                cartcount=carcount(employeename,True)
-                return JsonResponse({'message':'order added','cartcount':cartcount},safe=False)
-        '''
         
         orderplaced(receipeid,qty,userid)
         cartcount=carcount(userid)

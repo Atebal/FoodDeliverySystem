@@ -79,13 +79,18 @@ def guest_Login_page(request):
         username=request.POST.get('username')
         userid=User.objects.filter(username=username).values('id')
         userid=userid[0]['id']
-        Employee.objects.filter(username=userid).update(isguestlogin=True)
-        queryset=User.objects.all().values(
-            'username', 'employee__firstname','employee__last_name','employee__email','employee__mobile','addresstable__state','payment__balance','employee__isguestlogin'
-            )
-    context={'users':queryset}
+        alreadygusetlogin=Employee.objects.filter(isguestlogin=True).count()
+        if alreadygusetlogin > 0:
+           return JsonResponse({'message':'only one guest can login at a time'})
+            
+        else:
+            Employee.objects.filter(username=userid).update(isguestlogin=True)
+            queryset=User.objects.all().values(
+                'username', 'employee__firstname','employee__last_name','employee__email','employee__mobile','addresstable__state','payment__balance','employee__isguestlogin'
+                )
+            context={'users':queryset}
 
-    return render(request,'users.html',context)
+            return render(request,'users.html',context)
 
 def guest_Logout_page(request):
     if request.method=="POST":

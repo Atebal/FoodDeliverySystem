@@ -99,7 +99,7 @@
         $('#exampleModal').modal('hide');
         });
         
-        function quickview(id)
+function quickview(id)
                 {
                     debugger;
         
@@ -122,28 +122,8 @@
                     });
                 }
         
-        function addorderitems(id){
+function addorderitems(id){
         debugger;
-        isAdminplaced=false;
-        employeename=false;
-        var username;
-            if('{{request.user}}'=='admin' && localStorage.getItem('isadminShoppingforEmployee')=='true')
-            {
-                    isAdminplaced=localStorage.getItem('isadminShoppingforEmployee')
-                    employeename=localStorage.getItem('customername')
-                    var expirationDate = new Date();
-                    expirationDate.setDate(expirationDate.getDate() + 30);
-                    document.cookie = 'isAdminplaced='+isAdminplaced +'; expires=' + expirationDate.toUTCString()
-                    document.cookie = 'employeename='+employeename +'; expires=' + expirationDate.toUTCString()
-                    
-                   // request.session['employeename']=localStorage.getItem('customername')
-                
-            }
-            else
-            {
-                localStorage.clear();
-                }
-
             var qty=$("#pqty_"+id)[0].innerText
             var csrfToken = '{{ csrf_token }}';
             cartcount=0;
@@ -156,9 +136,6 @@
                         data:{
                             "id":id,
                             "itemquantity":qty,
-                            'cartcount':cartcount,
-                            'isAdminplaced':isAdminplaced,
-                            'employeename':employeename,
                             'csrfmiddlewaretoken': csrfToken
                         },
                         
@@ -176,6 +153,13 @@
                                     $('#pcart')[0].innerHTML="Please check your cart";
                                    // $('#statusSuccessModal').modal('show');
                                 }
+                                else{
+                                    const newWindow = window.open();
+                                    newWindow.document.open();
+                                    newWindow.document.write(response);
+                                    newWindow.document.close();
+                                    //window.location.href='/login/'
+                                }
                               // Insert rendered HTML into div
                         },
                         error: function (error) {
@@ -185,7 +169,7 @@
         
         }
         
-        function cartbutton()
+function cartbutton()
                 {
                     debugger;
                     var $addQuantity = $(".btn-quantity.plus")
