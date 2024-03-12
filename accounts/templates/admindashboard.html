@@ -297,6 +297,14 @@
 
 $(document).ready(function(){
    
+    var table = $('#bootstrap-data-table').DataTable({
+   
+   destroy : true
+});
+
+
+
+
    var sales= getarrayfromstring("{{salesdate}}")
    var salesdates=removeescapecharchters(sales)
 
@@ -577,6 +585,7 @@ function getroles()
                 type: 'GET',
                 success: function (response) {
                     $('#divpages').html(response); 
+                    $('#bootstrap-data-table-suerroles').DataTable();
                     console.log('got user daat') // Insert rendered HTML into div
                 },
                 error: function (error) {
@@ -612,6 +621,7 @@ function listreceipe()
                 success: function (response) {
                   debugger;
                     $('#divpages').html(response); 
+                    $('#bootstrap-data-table-receipe').DataTable();
                     console.log('got receipe data') // Insert rendered HTML into div
                 },
                 error: function (error) {
@@ -648,6 +658,7 @@ function whatstodaylist()
                 success: function (response) {
                   debugger;
                     $('#divpages').html(response); 
+                    $('#bootstrap-data-table-receipe').DataTable();
                     console.log('got receipe data') // Insert rendered HTML into div
                 },
                 error: function (error) {
@@ -660,7 +671,7 @@ function getreceipedetails() {
             
       var table = $('#bootstrap-data-table-receipe').DataTable();          
 
-     $('#bootstrap-data-table-receipe tbody').on('click', 'td', function () {
+     $('bootstrap-data-table-receipe tbody').on('click', 'td', function () {
 
       
                             debugger;

@@ -257,7 +257,7 @@ def getitemsincart(username):
      return order_items
 
 
-def getallrecepies(request):
+def getallrecepieslist(request):
      items=Item.objects.all()
      context={'items':items}
      return render(request,"recepies.html",context)

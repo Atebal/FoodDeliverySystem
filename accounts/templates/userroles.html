@@ -32,7 +32,7 @@
                         <div class="card-body">
                             <form id="myform" method="post" enctype="multipart/form-data">
                                 {% csrf_token %}
-                                <table id="bootstrap-data-table" class="table table-striped table-bordered">
+                                <table id="bootstrap-data-table-suerroles" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
                                             <th>UserName</th>
@@ -84,12 +84,12 @@
 
             function assignroles(id) {
                 debugger;
-                var table = $('#bootstrap-data-table').DataTable();
+                var table = $('#bootstrap-data-table-suerroles').DataTable();
                 var csrfToken = '{{ csrf_token }}'; // Obtain CSRF token from Django template
                 debugger;
                 var username;
 
-                $('#bootstrap-data-table tbody').on('click', 'tr', function (e) {
+                $('#bootstrap-data-table-suerroles tbody').on('click', 'tr', function (e) {
                     debugger;
                     e.preventDefault();
                     username = table.row(this).data()[0];
@@ -118,12 +118,12 @@
         
             function removeroles(id) {
                 debugger;
-                var table = $('#bootstrap-data-table').DataTable();
+                var table = $('#bootstrap-data-table-suerroles').DataTable();
                 var csrfToken = '{{ csrf_token }}'; // Obtain CSRF token from Django template
                 debugger;
                 var username;
 
-                $('#bootstrap-data-table tbody').on('click', 'tr', function (e) {
+                $('#bootstrap-data-table-suerroles tbody').on('click', 'tr', function (e) {
                     debugger;
                     e.preventDefault();
                     username = table.row(this).data()[0];
@@ -154,8 +154,8 @@
         function purchaseitem()
         {
                        
-            var table = $('#bootstrap-data-table').DataTable();
-            $('#bootstrap-data-table tbody').on('click', 'tr', function (e) {
+            var table = $('#bootstrap-data-table-suerroles').DataTable();
+            $('#bootstrap-data-table-suerroles tbody').on('click', 'tr', function (e) {
                     debugger;
                     e.preventDefault();
             username = table.row(this).data()[0];
@@ -171,11 +171,11 @@
         
 
         function deleteuser() {
-                var table = $('#bootstrap-data-table').DataTable();
+                var table = $('#bootstrap-data-table-suerroles').DataTable();
                 var csrfToken = '{{ csrf_token }}'; // Obtain CSRF token from Django template
                 var username;
 
-                $('#bootstrap-data-table tbody').on('click', 'tr', function (e) {
+                $('#bootstrap-data-table-suerroles tbody').on('click', 'tr', function (e) {
                     debugger;
                     e.preventDefault();
                     username = table.row(this).data()[0]; // Assuming username is the first column
