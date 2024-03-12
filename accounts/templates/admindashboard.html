@@ -641,6 +641,7 @@ function createwhatstoday()
                 success: function (response) {
                   debugger;
                     $('#divpages').html(response); 
+                    $('#bootstrap-data-table-itemlist').DataTable();
                     console.log('got receipe data') // Insert rendered HTML into div
                 },
                 error: function (error) {
