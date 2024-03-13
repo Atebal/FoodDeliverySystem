@@ -126,12 +126,13 @@ def profile(request):
     context={'employee':queryset}
     return render(request,"userprofile.html",context)
     
-def address(request,id):
+def address(request):
     if request.method=="POST":
         street=request.POST.get('street')
         district=request.POST.get('district')
         state=request.POST.get('state')
-        user=User.objects.get(id=id)
+        userid=request.user.id
+        user=User.objects.get(id=userid)
         address=AddressTable.objects.create(
             username=user,
             street=street,
@@ -139,11 +140,11 @@ def address(request,id):
             state=state
             )
         address.save()
-        queryset=User.objects.filter(id=id).values(
+        queryset=User.objects.filter(id=userid).values(
             'username', 'employee__firstname','employee__last_name','employee__email','employee__mobile','addresstable__state','payment__balance'
             )
         context={'employee':queryset}
-        return redirect(request,'/adminpanel')
+        return redirect('/userdashboard/')
     return render(request,"address.html")
 
 @group_required('CMSAdmin')
@@ -280,7 +281,8 @@ def editUser(request):
     username=username=request.user.username
     userid=request.user.id
     queryset=User.objects.filter(username=username).values(
-            'username', 'employee__firstname','employee__last_name','employee__email','employee__mobile'
+            'username', 'employee__firstname','employee__last_name','employee__email','employee__mobile',
+            'addresstable__street','addresstable__district','addresstable__state'
             )
     
     if request.method=='POST':

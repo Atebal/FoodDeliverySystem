@@ -95,7 +95,70 @@
 
    
         
-   
+        function getreceipedetails() {
+    debugger;
+            
+      var table = $('#bootstrap-data-table-receipe').DataTable();          
+
+     $('#bootstrap-data-table-receipe tbody').on('click', 'td', function () {
+
+      
+                            debugger;
+            var cellIndex = table.cell(this).index();
+            var cellData = table.cell(this).data();
+            var rowIndex = table.row($(this).closest('tr')).index();
+            var rowData = table.row(rowIndex).data();
+            var id=table.row(rowIndex).data().DT_RowId
+           
+            if(cellIndex.column==3){
+                
+    
+            debugger;
+            $.ajax({
+                type: 'GET',
+                url: '/getreceipedetails/',  // URL to the Django view
+                data: { 'id': id 
+                        },
+                success: function (response) {
+                    debugger;
+                    console.log("entered")
+                    $('#divpopedit').html(response);
+                    
+                    $("#editr").modal('show');
+                    // $('#divpages').html(response); 
+
+
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+          }
+        else if(cellIndex.column==4)
+        {
+
+        var csrfToken = '{{ csrf_token }}'; // Obtain CSRF token from Django template
+        $.ajax({
+            type: 'POST',
+            url: '/deletereceipe/',
+            data: {
+                'id': id,
+                
+                'csrfmiddlewaretoken': csrfToken
+            },
+            success: function (response) {
+                $('#divpages').html(response);
+            },
+            error: function (xhr, status, error) {
+                console.error(xhr.responseText);
+            }
+        });
+
+    }
+        
+          }); 
+
+        }
 
 
     </script>

@@ -258,6 +258,7 @@ function userorderhistory()
                 type: 'GET',
                 success: function (response) {
                     $('#divpages').html(response); 
+                    $('#bootstrap-data-table-userhistory').DataTable();
                     console.log('got user daat') // Insert rendered HTML into div
                 },
                 error: function (error) {
